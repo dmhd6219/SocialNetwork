@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+
+            <div class="media align-items-center mb-4"
+                 style="width: 100%; font-size: xx-large; ">
+                <div class="mine-bg">
+                    <img sizes="(min-width: 1280px) 232px, 192px"
+                         src="{{artist['images'][0]['url']}}" alt="" style="" class="mine-img">
+                </div>
+                <div class="media-body ml-3">
+                    <h6 class="mb-0"><a href="#">{{artist['name']}}</a></h6>
+                    <p class="mb-0">{{artist['followers']['total']}} followers</p>
+                </div>
+            </div>
+
+
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Top Tracks</h4>
+                        </div>
+
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="top-tracks" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                            <div class="slick-list draggable">
+                                <div class="slick-track">
+                                    <ul id="top-music" class="d-flex list-inline m-0 p-0">
+
+                                        {% for song in top_tracks %}
+
+                                        <li class="text-center col-sm-2">
+                                            <div class="music-thumbnail position-relative mb-3">
+                                                <a href="#"><img src="{{song['album']['images'][0]['url']}}"
+                                                                 alt="music-thumb"
+                                                                 class="img-fluid w-100">
+                                                </a>
+                                            </div>
+                                            <h6>{{song['artists'][0]['name']}}</h6>
+                                            <p class="mb-0">{{song['name']}}</p>
+                                        </li>
+
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {% if albums %}
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Albums</h4>
+                        </div>
+                        {% if albums|length > 6 %}
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                            <a href="#">View All</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="albums" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                            <div class="slick-list draggable">
+                                <div class="slick-track">
+                                    <ul id="album-track" class="d-flex list-inline m-0 p-0">
+
+                                        {% for album in albums %}
+
+                                        <li class="text-center col-sm-2">
+                                            <div class="music-thumbnail position-relative mb-3">
+                                                <a href="#"><img src="{{album['images'][0]['url']}}"
+                                                                 alt="music-thumb"
+                                                                 class="img-fluid w-100">
+                                                </a>
+                                            </div>
+                                            <h6>{{album['artists'][0]['name']}}</h6>
+                                            <p class="mb-0">{{album['name']}}</p>
+                                        </li>
+
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if singles %}
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Singles and EP's</h4>
+                        </div>
+                        {% if singles|length > 6 %}
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                            <a href="#">View All</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="singles" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                            <div class="slick-list draggable">
+                                <div class="slick-track">
+                                    <ul id="single-track" class="d-flex list-inline m-0 p-0">
+
+                                        {% for single in singles %}
+
+                                        <li class="text-center col-sm-2">
+                                            <div class="music-thumbnail position-relative mb-3">
+                                                <a href="#"><img src="{{single['images'][0]['url']}}"
+                                                                 alt="music-thumb"
+                                                                 class="img-fluid w-100">
+                                                </a>
+                                            </div>
+                                            <h6>{{single['artists'][0]['name']}}</h6>
+                                            <p class="mb-0">{{single['name']}}</p>
+                                        </li>
+
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if appears_on %}
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Appears on</h4>
+                        </div>
+                        {% if appears_on|length > 6 %}
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                            <a href="#">View All</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="appears_on" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                            <div class="slick-list draggable">
+                                <div class="slick-track">
+                                    <ul id="appears_on-track" class="d-flex list-inline m-0 p-0">
+
+                                        {% for track in appears_on %}
+
+                                        <li class="text-center col-sm-2">
+                                            <div class="music-thumbnail position-relative mb-3">
+                                                <a href="#"><img src="{{track['images'][0]['url']}}"
+                                                                 alt="music-thumb"
+                                                                 class="img-fluid w-100">
+                                                </a>
+                                            </div>
+                                            <h6>{{track['artists'][0]['name']}}</h6>
+                                            <p class="mb-0">{{track['name']}}</p>
+                                        </li>
+
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<!-- Wrapper END -->
+
+{% endblock %}

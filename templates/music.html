@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="header-for-bg">
+    <div class="background-header position-relative">
+        <img src="static/images/page-img/profile-bg8.jpg" class="img-fluid w-100 rounded rounded" alt="header-bg">
+        <div class="title-on-header">
+            <div class="data-block">
+                <h2>Music</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content  -->
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Playlists</h4>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <ul class="music-lists m-0 p-0">
+                            {% for playlist in spotify.current_user_playlists(limit=5)['items'] %}
+                            <a href="/music/playlist/{{playlist['external_urls']['spotify'].split('/playlist/')[-1]}}">
+                                <li class="d-flex mb-4 align-items-center">
+                                    <div class="user-img img-fluid"><img src="{{playlist['images'][0]['url']}}"
+                                                                         alt="story-img"
+                                                                         class="rounded-circle avatar-40"></div>
+                                    <div class="media-support-info ml-3">
+                                        <h6>{{playlist['name']}}</h6>
+                                    </div>
+                                    <div class="music-time">{{playlist['tracks']['total']}} track(s)</div>
+                                </li>
+                            </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-body p-0  ">
+                        <a href="#"><img src="static/images/page-img/48.jpg" alt="story-img" class="img-fluid rounded"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">New Music</h4>
+                        </div>
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                            <a href="#">View More</a>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="new-music" class="d-flex list-inline m-0 p-0 FUCK">
+                            {% for song in spotify.new_releases("RU", limit=6)["albums"]['items'] %}
+                            <li class="text-center col-sm-2">
+                                <div class="music-thumbnail position-relative mb-3">
+                                    <a href="#"><img src="{{ song['images'][0]['url'] }}" alt="music-thumb"
+                                                     class="img-fluid w-100"></a>
+                                    <div class="play-btn">
+                                        <a href="#"><i class="ri-play-fill text-white"></i></a>
+                                    </div>
+                                </div>
+                                <h6>{{song['artists'][0]['name']}}</h6>
+                                <p class="mb-0">{{song['name']}}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="col-sm-12">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Recent Added</h4>
+                        </div>
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                            <a href="#">View All</a>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <ul id="recent-music" class="d-flex list-inline m-0 p-0 FUCK">
+                            <li class="text-center col-sm-2">
+                                <div class="music-thumbnail position-relative mb-3">
+                                    <a href="#"><img src="static/images/page-img/n8.jpg" alt="music-thumb"
+                                                     class="img-fluid w-100"></a>
+                                    <div class="play-btn">
+                                        <a href="#"><i class="ri-play-fill text-white"></i></a>
+                                    </div>
+                                </div>
+                                <h6>Lizzo</h6>
+                                <p class="mb-0">Best Advice</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                -->
+        </div>
+        <div class="col-sm-12">
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">Your Top Tracks</h4>
+                    </div>
+                    <div class="iq-card-header-toolbar d-flex align-items-center">
+                        <a href="#">View More</a>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <ul id="top-music" class="d-flex list-inline m-0 p-0 FUCK">
+                        {% for song in spotify.current_user_top_tracks(limit=7, time_range='short_term')['items'] %}
+                        <li class="text-center col-sm-2">
+                            <div class="music-thumbnail position-relative mb-3">
+                                <a href="#"><img src="{{ song['album']['images'][0]['url'] }}" alt="music-thumb"
+                                                 class="img-fluid w-100"></a>
+                                <div class="play-btn">
+                                    <a href="#"><i class="ri-play-fill text-white"></i></a>
+                                </div>
+                            </div>
+                            <a href="/artist/{{song['artists'][0]['id']}}">
+                                <h6>{{song['artists'][0]['name']}}</h6>
+                            </a>
+                            <p class="mb-0">{{song['name']}}</p>
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">Your Top Artists</h4>
+                    </div>
+                    <div class="iq-card-header-toolbar d-flex align-items-center">
+                        <a href="#">View More</a>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <ul id="top-artist" class="d-flex list-inline m-0 p-0 FUCK">
+                        {% for artist in spotify.current_user_top_artists(limit=7, time_range='short_term')['items']%}
+                        <li class="text-center col-sm-2">
+                            <div class="music-thumbnail position-relative mb-3">
+                                <a href="/artist/{{artist['id']}}"><img src="{{ artist['images'][0]['url'] }}"
+                                                                        alt="music-thumb"
+                                                                        class="img-fluid w-100"></a>
+                            </div>
+                            <a href="/artist/{{artist['id']}}">
+                                <h6>{{artist['name']}}</h6>
+                            </a>
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="audioPlayer" class="player-primary" style="display: flex;
+                                            flex-wrap: wrap;
+                                            position: fixed;
+
+                                            right: 13.5%;
+                                            bottom: 0.5%;
+                                            left: 13.5%;
+
+                                            align-items: center;
+                                            background-color: #fff;
+                                            border-radius: 1rem;
+                                            height: 4.5rem;
+                                            z-index: 1004;
+                                            box-shadow: 0 1px 12px 2px rgb(0 0 0 / 15%);
+                                            transition: .4s all ease-in;">
+
+
+        <div class="audio" style="display: flex;
+                                                    flex-wrap: wrap;
+                                                    flex: 0 0 37%;
+                                                    max-width: 37%;
+                                                    align-items: center;">
+            {% set current_song = spotify.current_playback()['item'] %}
+            <div class="song-image"><img alt="" data-amplitude-song-info="cover_art_url"
+                                         src="{{ current_song['album']['images'][2]['url'] }}"
+                                         style="width: 72px; height: 72px; border-radius: 10px;"></div>
+            <div class="song-info pl-3"><span class="song-name d-inline-block text-truncate"
+                                              data-amplitude-song-info="name">{{ current_song['name'] }}</span><span
+                    class="song-artists d-block text-muted" data-amplitude-song-info="artist">{{ current_song['artists'][0]['name'] }}</span>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+</div>
+</div>
+<!-- Wrapper END -->
+
+{% endblock %}

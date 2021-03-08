@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Page Content  -->
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="birthday-block">
+                    <div class="iq-card">
+                        <div class="iq-card-header d-flex justify-content-between" style="border:none;">
+                            <div class="iq-header-title">
+                                <h4 class="card-title">Artists</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for artist in artists %}
+                        {% if artist['images'] %}
+                            <div class="col-md-6 col-lg-6">
+                            <div class="iq-card">
+                                <div class="iq-card-body">
+                                    <a href="/artist/{{artist['id']}}">
+                                    <div class="iq-birthday-block">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{artist['images'][1]['url']}}" alt="profile-img"
+                                                     class="img-fluid" style="border-radius: 10px;">
+                                                <div class="friend-info ml-3">
+                                                    <h5>{{artist['name']}}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12">
+                    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-header d-flex justify-content-between">
+                            <div class="iq-header-title">
+                                <h4 class="card-title">Albums and Singles</h4>
+                            </div>
+                            {% if albums|length == 6 %}
+                            <div class="iq-card-header-toolbar d-flex align-items-center">
+                                <a href="#">View More</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="iq-card-body">
+                            <ul id="search-albums" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                                {% for album in albums %}
+
+                                <li class="text-center col-sm-2">
+                                    <div class="music-thumbnail position-relative mb-3">
+                                        <a href="#"><img src="{{ album['images'][1]['url'] }}" alt="music-thumb"
+                                                         class="img-fluid w-100"></a>
+                                        <div class="play-btn">
+                                            <a href="#"><i class="ri-play-fill text-white"></i></a>
+                                        </div>
+                                    </div>
+                                    <h6>{{album['artists'][0]['name']}}</h6>
+                                    <p class="mb-0">{{album['name']}}</p>
+                                </li>
+
+
+
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-header d-flex justify-content-between">
+                            <div class="iq-header-title">
+                                <h4 class="card-title">Tracks</h4>
+                            </div>
+                            {% if tracks|length == 6 %}
+                            <div class="iq-card-header-toolbar d-flex align-items-center">
+                                <a href="#">View More</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="iq-card-body">
+                            <ul id="search-tracks" class="d-flex list-inline m-0 p-0 slick-initialized slick-slider">
+                                {% for track in tracks %}
+                                <li class="text-center col-sm-2">
+                                    <div class="music-thumbnail position-relative mb-3">
+                                        <a href="#"><img src="{{ track['album']['images'][1]['url'] }}"
+                                                         alt="music-thumb"
+                                                         class="img-fluid w-100"></a>
+                                        <div class="play-btn">
+                                            <a href="#"><i class="ri-play-fill text-white"></i></a>
+                                        </div>
+                                    </div>
+                                    <h6>{{track['artists'][0]['name']}}</h6>
+                                    <p class="mb-0">{{track['name']}}</p>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- Wrapper END -->
+
+{% endblock %}
