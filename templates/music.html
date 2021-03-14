@@ -26,7 +26,7 @@
                     <div class="iq-card-body">
                         <ul class="music-lists m-0 p-0">
                             {% for playlist in spotify.current_user_playlists(limit=5)['items'] %}
-                            <a href="/music/playlist/{{playlist['external_urls']['spotify'].split('/playlist/')[-1]}}">
+                            <a href="/playlist/{{playlist['id']}}">
                                 <li class="d-flex mb-4 align-items-center">
                                     <div class="user-img img-fluid"><img src="{{playlist['images'][0]['url']}}"
                                                                          alt="story-img"
@@ -64,13 +64,10 @@
                             {% for song in spotify.new_releases("RU", limit=6)["albums"]['items'] %}
                             <li class="text-center col-sm-2">
                                 <div class="music-thumbnail position-relative mb-3">
-                                    <a href="#"><img src="{{ song['images'][0]['url'] }}" alt="music-thumb"
+                                    <a href="/album/{{song['id']}}"><img src="{{ song['images'][0]['url'] }}" alt="music-thumb"
                                                      class="img-fluid w-100"></a>
-                                    <div class="play-btn">
-                                        <a href="#"><i class="ri-play-fill text-white"></i></a>
-                                    </div>
                                 </div>
-                                <h6>{{song['artists'][0]['name']}}</h6>
+                                <a href="/artist/{{song['artists'][0]['id']}}"><h6>{{song['artists'][0]['name']}}</h6></a>
                                 <p class="mb-0">{{song['name']}}</p>
                             </li>
                             {% endfor %}
@@ -122,11 +119,8 @@
                         {% for song in spotify.current_user_top_tracks(limit=7, time_range='short_term')['items'] %}
                         <li class="text-center col-sm-2">
                             <div class="music-thumbnail position-relative mb-3">
-                                <a href="#"><img src="{{ song['album']['images'][0]['url'] }}" alt="music-thumb"
+                                <a href="/track/{{song['id']}}"><img src="{{ song['album']['images'][0]['url'] }}" alt="music-thumb"
                                                  class="img-fluid w-100"></a>
-                                <div class="play-btn">
-                                    <a href="#"><i class="ri-play-fill text-white"></i></a>
-                                </div>
                             </div>
                             <a href="/artist/{{song['artists'][0]['id']}}">
                                 <h6>{{song['artists'][0]['name']}}</h6>
@@ -172,6 +166,7 @@
 
     </div>
 
+    <!--
     <div id="audioPlayer" class="player-primary" style="display: flex;
                                             flex-wrap: wrap;
                                             position: fixed;
@@ -207,6 +202,8 @@
         </div>
 
     </div>
+
+    -->
 
 </div>
 </div>

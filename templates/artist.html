@@ -13,7 +13,7 @@
                          src="{{artist['images'][0]['url']}}" alt="" style="" class="mine-img">
                 </div>
                 <div class="media-body ml-3">
-                    <h6 class="mb-0"><a href="#">{{artist['name']}}</a></h6>
+                    <h6 class="mb-0">{{artist['name']}}</h6>
                     <p class="mb-0">{{artist['followers']['total']}} followers</p>
                 </div>
             </div>
@@ -37,12 +37,12 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="#"><img src="{{song['album']['images'][0]['url']}}"
+                                                <a href="/track/{{song['id']}}"><img src="{{song['album']['images'][0]['url']}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
                                             </div>
-                                            <h6>{{song['artists'][0]['name']}}</h6>
+                                            <a href="/artist/{{song['artists'][0]['id']}}"><h6>{{song['artists'][0]['name']}}</h6></a>
                                             <p class="mb-0">{{song['name']}}</p>
                                         </li>
 
@@ -78,12 +78,12 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="#"><img src="{{album['images'][0]['url']}}"
+                                                <a href="/album/{{album['id']}}"><img src="{{album['images'][0]['url']}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
                                             </div>
-                                            <h6>{{album['artists'][0]['name']}}</h6>
+                                            <a href="/artist/{{album['artists'][0]['id']}}"><h6>{{album['artists'][0]['name']}}</h6></a>
                                             <p class="mb-0">{{album['name']}}</p>
                                         </li>
 
@@ -120,12 +120,12 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="#"><img src="{{single['images'][0]['url']}}"
+                                                <a href="/album/{{single['id']}}"><img src="{{single['images'][0]['url']}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
                                             </div>
-                                            <h6>{{single['artists'][0]['name']}}</h6>
+                                            <a href="'/artist/{{single['artists'][0]['id']}}"><h6>{{single['artists'][0]['name']}}</h6></a>
                                             <p class="mb-0">{{single['name']}}</p>
                                         </li>
 
@@ -162,12 +162,12 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="#"><img src="{{track['images'][0]['url']}}"
+                                                <a href="/album/{{track['id']}}"><img src="{{track['images'][0]['url']}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
                                             </div>
-                                            <h6>{{track['artists'][0]['name']}}</h6>
+                                            <a href="/artist/{{track['artists'][0]}}"><h6>{{track['artists'][0]['name']}}</h6></a>
                                             <p class="mb-0">{{track['name']}}</p>
                                         </li>
 

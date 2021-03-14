@@ -223,17 +223,153 @@ def artist(id):
     except:
         return abort(404)
 
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        return redirect(f'/music/search/{search_form.data.data}')
-
     return render_template('artist.html', spotify=spotify, **params)
+
+
+@app.route('/playlist/<id>')
+@login_required
+def playlist(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'/artist/{id}')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    # id = 2duj5GBXwLRdjqV9hjXy4o
+
+    try:
+        params['playlist'] = spotify.playlist(id)
+        dur = 0
+        for track in params['playlist']['tracks']['items']:
+            dur += float(track['track']['duration_ms']) / 1000 / 60
+        params['duration'] = round(dur, 2)
+    except:
+        return abort(404)
+
+    pprint(params['playlist']['tracks']['items'])
+
+    return render_template('playlist.html', spotify=spotify, **params)
+
+
+@app.route('/track/<id>')
+@login_required
+def track(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'/track/{id}')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    # id = 77yYxfpXB64ktXPVdU9xcF
+
+    try:
+        params['music'] = spotify.track(id)
+        params['playlist'] = spotify.album(params['music']['album']['id'])
+        dur = 0
+        for track in params['playlist']['tracks']['items']:
+            dur += float(track['duration_ms']) / 1000 / 60
+        params['duration'] = round(dur, 2)
+    except:
+        return abort(404)
+
+    pprint(params['music'])
+
+    return render_template('track.html', spotify=spotify, **params)
+
+
+@app.route('/album/<id>')
+@login_required
+def album(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'/album/{id}')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    # id = 1zpglRcWM6VnMkpsFkHIdt
+
+    try:
+        params['playlist'] = spotify.album(id)
+        dur = 0
+        for track in params['playlist']['tracks']['items']:
+            dur += float(track['duration_ms']) / 1000 / 60
+        params['duration'] = round(dur, 2)
+    except:
+        return abort(404)
+
+    return render_template('album.html', spotify=spotify, **params)
 
 
 @app.route('/profile')
 @login_required
 def profile():
     return render_template('profile.html')
+
+
+@app.route('/id<id>')
+@login_required
+def user(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == id).first()
+
+    return render_template('user.html', user=user)
 
 
 @app.route('/profile/settings', methods=['GET', 'POST'])

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="card text-center" style="text-align: center;  margin: 0 auto;">
+                <div class="card-header">
+                    {{playlist['name']}}
+                </div>
+                <div class="card-body">
+                    <img src="{{playlist['images'][0]['url']}}" style="max-width: 300px;"
+                         alt="{{playlist['name']}} cover">
+                </div>
+                <div class="card-footer text-muted">
+                    {{playlist['tracks']['items']|length}} Tracks, {{duration|string|replace(".", ":")}} Mins. total.
+                </div>
+            </div>
+            <div style="width: 100%">
+                <table class="table table-responsive-xxl">
+                    <thead class="table-light">
+
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Artist</th>
+                        <th scope="col">Length</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for track in playlist['tracks']['items'] %}
+                        {% if loop.index == music['track_number'] %}
+                        <tr class="table-info">
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{track['name']}}</td>
+                            <td><a href="/artist/{{track['artists'][0]['id']}}">{{track['artists'][0]['name']}}</a></td>
+                            <td>{{ ((track['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}
+                                min.
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{track['name']}}</td>
+                            <td><a href="/artist/{{track['artists'][0]['id']}}">{{track['artists'][0]['name']}}</a></td>
+                            <td>{{ ((track['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}
+                                min.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
