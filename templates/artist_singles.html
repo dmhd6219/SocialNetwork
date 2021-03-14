@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header-for-bg">
+    <div class="background-header position-relative">
+        <img src="/static/images/page-img/profile-bg3.jpg" class="img-fluid w-100" alt="profile-bg">
+        <div class="title-on-header">
+            <div class="data-block">
+                <h2>{{artist['name']}}'s Singles and EP's</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+
+            {% for single in singles %}
+            <div class="col-md-6 col-lg-6">
+                <div class="iq-card">
+                    <div class="iq-card-body">
+                        <div class="iq-birthday-block">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <a href="/music/album/{{single['id']}}">
+                                        <img src="{{ single['images'][0]['url'] }}" alt="profile-img" class="img-fluid" style="max-width: 300px; max-height: 300px;">
+                                    </a>
+                                    <div class="friend-info ml-3">
+                                        <a href="/music/album/{{single['id']}}"><h5>{{single['name']}}</h5></a>
+                                        <a href="/music/artist/{{single['artists'][0]['id']}}"><p class="mb-0">{{single['artists'][0]['name']}}</p></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

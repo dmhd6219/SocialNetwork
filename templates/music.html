@@ -26,7 +26,7 @@
                     <div class="iq-card-body">
                         <ul class="music-lists m-0 p-0">
                             {% for playlist in spotify.current_user_playlists(limit=5)['items'] %}
-                            <a href="/playlist/{{playlist['id']}}">
+                            <a href="/music/playlist/{{playlist['id']}}">
                                 <li class="d-flex mb-4 align-items-center">
                                     <div class="user-img img-fluid"><img src="{{playlist['images'][0]['url']}}"
                                                                          alt="story-img"

@@ -64,7 +64,7 @@
                         </div>
                         {% if albums|length > 6 %}
                         <div class="iq-card-header-toolbar d-flex align-items-center">
-                            <a href="#">View All</a>
+                            <a href="/music/artist/{{artist['id']}}/albums">View All</a>
                         </div>
                         {% endif %}
                     </div>
@@ -106,7 +106,7 @@
                         </div>
                         {% if singles|length > 6 %}
                         <div class="iq-card-header-toolbar d-flex align-items-center">
-                            <a href="#">View All</a>
+                            <a href="/music/artist/{{artist['id']}}/singles">View All</a>
                         </div>
                         {% endif %}
                     </div>
@@ -148,7 +148,7 @@
                         </div>
                         {% if appears_on|length > 6 %}
                         <div class="iq-card-header-toolbar d-flex align-items-center">
-                            <a href="#">View All</a>
+                            <a href="/music/artist/{{artist['id']}}/appears_on">View All</a>
                         </div>
                         {% endif %}
                     </div>

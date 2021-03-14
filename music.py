@@ -13,7 +13,11 @@ caches_folder = './.spotify_caches/'
 if not os.path.exists(caches_folder):
     os.makedirs(caches_folder)
 
-SCOPE = 'user-top-read user-read-playback-position user-read-private user-read-email playlist-read-private user-library-read user-library-modify playlist-read-collaborative playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read user-follow-modify user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played'
+SCOPE = 'user-top-read user-read-playback-position user-read-private user-read-email ' \
+        'playlist-read-private user-library-read user-library-modify playlist-read-collaborative ' \
+        'playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read ' \
+        'user-follow-modify user-read-playback-state user-modify-playback-state ' \
+        'user-read-currently-playing user-read-recently-played'
 
 
 def session_cache_path():
@@ -61,6 +65,7 @@ def music():
 
 
 @blueprint.route('/music/search/<data>')
+@login_required
 def search_music(data):
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
@@ -95,6 +100,7 @@ def search_music(data):
 
 
 @blueprint.route('/music/artist/<id>')
+@login_required
 def artist(id):
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
@@ -124,13 +130,124 @@ def artist(id):
     try:
         params['artist'] = spotify.artist(id)
         params['top_tracks'] = spotify.artist_top_tracks(id)['tracks'][:6:]
-        params['albums'] = spotify.artist_albums(id, album_type='album')['items'][:7:]
-        params['singles'] = spotify.artist_albums(id, album_type='single')['items'][:7:]
-        params['appears_on'] = spotify.artist_albums(id, album_type='appears_on')['items'][:7:]
+        params['albums'] = spotify.artist_albums(id, album_type='album', limit=7)['items']
+        params['singles'] = spotify.artist_albums(id, album_type='single', limit=7)['items']
+        params['appears_on'] = spotify.artist_albums(id, album_type='appears_on', limit=7)['items']
     except:
         return abort(404)
 
     return render_template('artist.html', spotify=spotify, **params)
+
+
+@blueprint.route('/music/artist/<id>/albums')
+@login_required
+def artist_albums(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'music/artist/{id}/albums')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    try:
+        params['artist'] = spotify.artist(id)
+        params['albums'] = spotify.artist_albums(id, album_type='album', limit=50)['items']
+    except:
+        return abort(404)
+
+    return render_template('artist_albums.html', spotify=spotify, **params)
+
+
+@blueprint.route('/music/artist/<id>/singles')
+@login_required
+def artist_singles(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'music/artist/{id}/singles')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    try:
+        params['artist'] = spotify.artist(id)
+        params['singles'] = spotify.artist_albums(id, album_type='single', limit=50)['items']
+    except:
+        return abort(404)
+
+    return render_template('artist_singles.html', spotify=spotify, **params)
+
+
+@blueprint.route('/music/artist/<id>/appears_on')
+@login_required
+def artist_appears_on(id):
+    if not session.get('uuid'):
+        # Step 1. Visitor is unknown, give random ID
+        session['uuid'] = str(uuid.uuid4())
+
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(
+        scope=SCOPE,
+        cache_handler=cache_handler,
+        show_dialog=True)
+
+    if request.args.get("code"):
+        # Step 3. Being redirected from Spotify auth page
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect(f'music/artist/{id}/appears_on')
+
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        # Step 2. Display sign in link when no token
+        auth_url = auth_manager.get_authorize_url()
+        return redirect(auth_manager.get_authorize_url())
+
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    params = {}
+
+    try:
+        params['artist'] = spotify.artist(id)
+        params['appears_on'] = spotify.artist_albums(id, album_type='appears_on', limit=50)['items']
+    except:
+        return abort(404)
+
+    return render_template('artist_appears_on.html', spotify=spotify, **params)
 
 
 @blueprint.route('/music/playlist/<id>')
@@ -169,7 +286,7 @@ def playlist(id):
         for track in params['playlist']['tracks']['items']:
             dur += float(track['track']['duration_ms']) / 1000 / 60
         params['duration'] = round(dur, 2)
-    except:
+    except Exception:
         return abort(404)
 
     pprint(params['playlist']['tracks']['items'])
@@ -352,7 +469,6 @@ def top_artists():
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     params = {'artists': spotify.current_user_top_artists(time_range='short_term')}
-
 
     return render_template('top_artists.html', **params)
 
