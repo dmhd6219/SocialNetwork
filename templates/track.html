@@ -30,7 +30,7 @@
                     </thead>
                     <tbody>
                     {% for track in playlist['tracks']['items'] %}
-                        {% if loop.index == music['track_number'] %}
+                        {% if loop.index == music['track_number'] and playlist['tracks']['items']|length > 1 %}
                         <tr class="table-info">
                             <th scope="row">{{loop.index}}</th>
                             <td>{{track['name']}}</td>

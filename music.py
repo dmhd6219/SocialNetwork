@@ -75,7 +75,7 @@ def search_music(data):
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/artist/{id}')
+        return redirect(f'/music/search/{data}')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -109,7 +109,7 @@ def artist(id):
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/artist/{id}')
+        return redirect(f'music/artist/{id}')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -149,7 +149,7 @@ def playlist(id):
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/artist/{id}')
+        return redirect(f'/music/playlist/{id}')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -193,7 +193,7 @@ def track(id):
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/track/{id}')
+        return redirect(f'/music/track/{id}')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -238,7 +238,7 @@ def album(id):
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/album/{id}')
+        return redirect(f'/music/album/{id}')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -280,7 +280,7 @@ def new_music():
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/album/{id}')
+        return redirect(f'/music/new')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -310,7 +310,7 @@ def top_tracks():
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/album/{id}')
+        return redirect(f'/music/track/top')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
@@ -341,7 +341,7 @@ def top_artists():
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/album/{id}')
+        return redirect(f'/music/artist/top')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
