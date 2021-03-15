@@ -8,6 +8,7 @@ import uuid
 from flask_uploads import configure_uploads, patch_request_class
 
 import music
+import weather
 from data import db_session
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -217,10 +218,6 @@ def privacy_settings():
     return render_template('privacy_settings.html', privacy_settings=privacy_settings)
 
 
-@app.route('/weather')
-@login_required
-def weather():
-    return render_template('weather.html')
 
 
 @app.errorhandler(404)
@@ -237,5 +234,6 @@ if __name__ == '__main__':
     db_session.global_init("db/database.db")
 
     app.register_blueprint(music.blueprint)
+    app.register_blueprint(weather.blueprint)
 
     app.run(threaded=True, port=8080, debug=True)

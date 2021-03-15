@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<div class="header-for-bg">
+    <div class="background-header position-relative">
+        <img src="/static/images/page-img/profile-bg2.jpg" class="img-fluid w-100 rounded rounded" alt="header-bg">
+        <div class="title-on-header">
+            <div class="data-block">
+                <h2>Weather</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Content  -->
+<div id="content-page" class="content-page">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-3">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-body">
+
+                           <form method="post">
+                              {{ form.hidden_tag() }}
+                              <div class="form-group">
+                                 <label for="country">Write Your City</label>
+                                 {{form.city(class="form-control")}}
+                              </div>
+
+                              <div class="form-group">
+                                 {{form.submit(type="submit", class="btn btn-primary d-block w-100")}}
+                              </div>
+                           </form>
+
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        {% set status = w.status|lower %}
+                        {% if status == 'clear' %}
+                             <img src="/static/images/weather/sunny{{range(1, 4)|random}}.jpg" style="width: 480px; height: 480px">
+                        {% elif status == 'clouds' %}
+                             <img src="/static/images/weather/clouds{{range(1, 4)|random}}.jpg"  style="width: 480px; height: 480px">
+                        {% elif status == 'rain' %}
+                             <img src="/static/images/weather/rain{{range(1, 3)|random}}.jpg" style="width: 480px; height: 480px">
+                        {% elif status == 'snow' %}
+                             <img src="/static/images/weather/snow{{range(1, 4)|random}}.jpg" style="width: 480px; height: 480px">
+                        {% elif status == 'mist' or status == 'haze' %}
+                           <img src="/static/images/weather/mist{{range(1, 3)|random}}.jpg" style="width: 480px; height: 480px">
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="col-lg-3">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height bg-primary rounded">
+                        <div class="iq-card-body p-4">
+                           <div class="text-center">
+
+                              <div class="d-flex align-items-center justify-content-center">
+                                 {% set status = w.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line font-size-32"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line font-size-32"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line font-size-32"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line font-size-32"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line font-size-32"></i>
+                                    {% endif %}
+                                 <div class="text-left pl-3">
+                                    <h4 class="text-white">{{city}}</h4>
+                                     <p class="mb-0">{{w.detailed_status}}</p>
+                                 </div>
+                              </div>
+                              <div>
+                                 <h1 class="text-white">{{w.temperature('celsius')['temp']}}<span>°</span></h1>
+                              </div>
+                               <br>
+                              <ul class="d-flex align-items-center justify-content-between list-inline m-0 p-0">
+                                 <li>
+                                    <p class="text-white mb-0">Today</p>
+                                    {% set status = w.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                    <h6 class="text-white">{{w.temperature('celsius')['temp']}}<span>&#8451;</span></h6>
+                                 </li>
+                                 <li>
+                                    <p class="text-white mb-0">Tomorrow</p>
+                                    {% set status = wea_tomorrow.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                    <h6 class="text-white">{{wea_tomorrow.temperature('celsius')['temp']}}<span>&#8451;</span></h6>
+                                 </li>
+                              </ul>
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-12">
+                     <div class="iq-card">
+                        <div class="iq-card-body bg-info rounded">
+
+                           <ul class="iq-week-data d-flex justify-content-between list-inline m-0 p-0">
+                              <li class="text-center p-4">
+                                 <p class="mb-0">Tomorrow</p>
+                                 <div class="weather-icon mt-3 mb-3 font-size-20">
+                                    {% set status = wea_tomorrow.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                 </div>
+                                 <h6>{{wea_tomorrow.temperature('celsius')['temp']}} °</h6>
+                                 <p>Feels like {{wea_tomorrow.temperature('celsius')['feels_like']}} °</p>
+                              </li>
+                              <li class="text-center p-4">
+                                 <p class="mb-0">In one day</p>
+                                 <div class="weather-icon mt-3 mb-3 font-size-20">
+                                    {% set status = wea_two.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                 </div>
+                                 <h6>{{wea_two.temperature('celsius')['temp']}} °</h6>
+                                 <p>Feels like {{wea_two.temperature('celsius')['feels_like']}} °</p>
+                              </li>
+                              <li class="text-center p-4">
+                                 <p class="mb-0">In two days</p>
+                                 <div class="weather-icon mt-3 mb-3 font-size-20">
+                                    {% set status = wea_three.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                 </div>
+                                 <h6>{{wea_three.temperature('celsius')['temp']}} °</h6>
+                                 <p>Feels like {{wea_three.temperature('celsius')['feels_like']}} °</p>
+                              </li>
+                              <li class="text-center p-4">
+                                 <p class="mb-0">In three days</p>
+                                 <div class="weather-icon mt-3 mb-3 font-size-20">
+                                    {% set status = wea_four.status|lower %}
+                                    {% if status == 'clear' %}
+                                       <i class="ri-sun-line"></i>
+                                    {% elif status == 'clouds' %}
+                                       <i class="ri-cloudy-line"></i>
+                                    {% elif status == 'rain' %}
+                                       <i class="ri-heavy-showers-line"></i>
+                                    {% elif status == 'snow' %}
+                                       <i class="ri-snowy-line"></i>
+                                    {% elif status == 'mist' or status == 'haze' %}
+                                       <i class="ri-sun-foggy-line"></i>
+                                    {% endif %}
+                                 </div>
+                                 <h6>{{wea_four.temperature('celsius')['temp']}} °</h6>
+                                 <p>Feels like {{wea_four.temperature('celsius')['feels_like']}} °</p>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+{% endblock %}
