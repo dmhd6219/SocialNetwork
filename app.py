@@ -5,15 +5,19 @@ from flask import Flask, session, request, redirect, render_template, abort
 import spotipy
 import uuid
 
+from flask_restful import Api
 from flask_uploads import configure_uploads, patch_request_class
 
 import music
+import rest_api
 import weather
 from data import db_session
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
+from data.posts import Post
 from data.users import User
+from forms.post import CreatePost
 from forms.privacy_settings import PrivacySettingsForm
 from forms.profile_settings import AccountSetting, SocialMedia, ChangePassword
 from forms.search import SearchForm
@@ -35,6 +39,10 @@ login_manager.init_app(app)
 
 configure_uploads(app, photos)
 patch_request_class(app)
+
+api = Api(app)
+post_resource = rest_api.PostResource()
+post_list_resource = rest_api.PostListResource()
 
 
 def crop_center(pil_img, crop_width: int, crop_height: int) -> Image:
@@ -110,10 +118,16 @@ def logout():
     return redirect("/login")
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    create_post = CreatePost()
+    db_sess = db_session.create_session()
+
+    if create_post.validate_on_submit():
+        post_list_resource.post(current_user.id)
+
+    return render_template('profile.html', form=create_post, posts=db_sess.query(Post).filter(Post.user_id == current_user.id))
 
 
 @app.route('/id<id>')
@@ -208,8 +222,6 @@ def profile_settings():
 @app.route('/profile/settings/privacy', methods=['GET', 'POST'])
 @login_required
 def privacy_settings():
-    return render_template('comingsoon.html')
-
     privacy_settings = PrivacySettingsForm()
     if privacy_settings.validate_on_submit():
         # do magic and update db
@@ -218,6 +230,10 @@ def privacy_settings():
     return render_template('privacy_settings.html', privacy_settings=privacy_settings)
 
 
+@app.route('/messages')
+@login_required
+def messages():
+    return render_template('chat.html')
 
 
 @app.errorhandler(404)
@@ -235,5 +251,8 @@ if __name__ == '__main__':
 
     app.register_blueprint(music.blueprint)
     app.register_blueprint(weather.blueprint)
+
+    api.add_resource(rest_api.PostListResource, '/api/posts/<int:user_id>')
+    api.add_resource(rest_api.PostResource, '/api/posts/<int:post_id>')
 
     app.run(threaded=True, port=8080, debug=True)
