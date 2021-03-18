@@ -61,7 +61,7 @@
                     </div>
                     <div class="iq-card-body">
                         <ul id="new-music" class="d-flex list-inline m-0 p-0 FUCK">
-                            {% for song in spotify.new_releases("RU", limit=6)["albums"]['items'] %}
+                            {% for song in spotify.new_releases("RU", limit=7)["albums"]['items'] %}
                             <li class="text-center col-sm-2">
                                 <div class="music-thumbnail position-relative mb-3">
                                     <a href="/music/album/{{song['id']}}"><img src="{{ song['images'][0]['url'] }}"

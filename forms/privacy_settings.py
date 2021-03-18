@@ -6,13 +6,26 @@ from wtforms.validators import DataRequired
 
 
 class PrivacySettingsForm(FlaskForm):
-    profile = SelectField('Choose :', choices=['All', 'Only Friends', 'No one'],
+    profile = SelectField('Who can see Your Profile', choices=['All', 'Only Friends', 'No one'],
                           validators=[DataRequired()])
-    friends = SelectField('Choose :', choices=['All', 'Only Friends', 'No one'],
+    friends = SelectField('Who can see Your Friends', choices=['All', 'Only Friends', 'No one'],
                           validators=[DataRequired()])
-    music = SelectField('Choose :', choices=['All', 'Only Friends', 'No one'],
+    music = SelectField('Who can see Your Music', choices=['All', 'Only Friends', 'No one'],
                         validators=[DataRequired()])
-    messages = SelectField('Choose :', choices=['All', 'Only Friends'],
+    messages = SelectField('Who can write You', choices=['All', 'Only Friends'],
+                           validators=[DataRequired()])
+
+    submit = SubmitField("Submit")
+
+
+class PrivacySettingsForm2(FlaskForm):
+    profile = SelectField('Others can see Your Email', choices=['All', 'Only Friends', 'No one'],
+                          validators=[DataRequired()])
+    friends = SelectField('Others can see Your Friends', choices=['All', 'Only Friends', 'No one'],
+                          validators=[DataRequired()])
+    music = SelectField('Who can see Your Music', choices=['All', 'Only Friends', 'No one'],
+                        validators=[DataRequired()])
+    messages = SelectField('Who can write You', choices=['All', 'Only Friends'],
                            validators=[DataRequired()])
 
     submit = SubmitField("Submit")

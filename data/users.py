@@ -5,7 +5,7 @@ from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .db_session import SqlAlchemyBase
-
+from .posts import Post
 
 
 class User(SqlAlchemyBase, UserMixin):
@@ -62,13 +62,15 @@ class User(SqlAlchemyBase, UserMixin):
     gender = sqlalchemy.Column(sqlalchemy.String, default='')
     show_gender = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
-
-
-
-
-
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
+
+    def create_post(self, text, db_sess):
+        post = Post()
+        post.text = text
+        post.user_id = self.id
+        post.user = db_sess.query(User).filter(User.id == self.id).first()
+        return post
