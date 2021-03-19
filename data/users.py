@@ -23,6 +23,9 @@ class User(SqlAlchemyBase, UserMixin):
                               index=True, unique=True, nullable=True)
     show_email = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
+    url = sqlalchemy.Column(sqlalchemy.String, nullable=False, default='')
+    show_url = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
@@ -50,17 +53,23 @@ class User(SqlAlchemyBase, UserMixin):
     youtube = sqlalchemy.Column(sqlalchemy.String, nullable=False, default='https://youtube.com/')
     show_youtube = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
-    mobile_phone = sqlalchemy.Column(sqlalchemy.String, default='')
-    show_mobile_phone = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
+    phone = sqlalchemy.Column(sqlalchemy.String, default='')
+    show_phone = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
     address = sqlalchemy.Column(sqlalchemy.String, default='')
     show_address = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
-    age = sqlalchemy.Column(sqlalchemy.String, default='')
+    city = sqlalchemy.Column(sqlalchemy.String, default='')
+    show_city = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
+
+    age = sqlalchemy.Column(sqlalchemy.Integer, default=0)
     show_age = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
     gender = sqlalchemy.Column(sqlalchemy.String, default='')
     show_gender = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
+
+    marital_status = sqlalchemy.Column(sqlalchemy.String, default='')
+    show_marital_status = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

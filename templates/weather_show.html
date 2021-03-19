@@ -26,7 +26,11 @@
                               {{ form.hidden_tag() }}
                               <div class="form-group">
                                  <label for="country">Write Your City</label>
-                                 {{form.city(class="form-control")}}
+                                 {% if current_user.city %}
+                                    {{form.city(class="form-control", value=current_user.city)}}
+                                 {% else %}}
+                                    {{form.city(class="form-control")}}
+                                 {% endif %}
                               </div>
 
                               <div class="form-group">

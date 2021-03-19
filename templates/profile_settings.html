@@ -63,11 +63,11 @@
                                     value=current_user.vk)}}
                                     <div class="custom-control custom-checkbox">
                                         {% if current_user.show_vk %}
-                                        {{social_media.show_vk(type="checkbox", class="custom-control-input",
-                                        id="vkcheck", checked="")}}
+                                            {{social_media.show_vk(type="checkbox", class="custom-control-input",
+                                            id="vkcheck", checked="")}}
                                         {% else %}
-                                        {{social_media.show_vk(type="checkbox", class="custom-control-input",
-                                        id="vkcheck")}}
+                                            {{social_media.show_vk(type="checkbox", class="custom-control-input",
+                                            id="vkcheck")}}
                                         {% endif %}
                                         <label class="custom-control-label"
                                                for="vkcheck">{{social_media.show_vk.label}}</label>

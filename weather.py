@@ -20,8 +20,8 @@ mgr = owm.weather_manager()
 @blueprint.route('/weather', methods=['GET', 'POST'])
 @login_required
 def weather():
-    # if current_user.city:
-    # return redirect(f'/weather/{current_user.city}')
+    if current_user.city:
+        return redirect(f'/weather/{current_user.city}')
 
     form = WeatherForm()
     if form.validate_on_submit():

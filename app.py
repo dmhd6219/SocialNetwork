@@ -17,6 +17,8 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 
 from data.posts import Post
 from data.users import User
+from forms.contacts import ContactInformation
+from forms.personal_info import PersonalInformation
 from forms.post import CreatePost
 from forms.privacy_settings import PrivacySettingsForm
 from forms.profile_settings import AccountSetting, SocialMedia, ChangePassword
@@ -127,7 +129,8 @@ def profile():
     if create_post.validate_on_submit():
         post_list_resource.post(current_user.id)
 
-    return render_template('profile.html', form=create_post, posts=db_sess.query(Post).filter(Post.user_id == current_user.id))
+    return render_template('profile.html', form=create_post,
+                           posts=db_sess.query(Post).filter(Post.user_id == current_user.id))
 
 
 @app.route('/id<id>')
@@ -139,51 +142,49 @@ def user(id):
     return render_template('user.html', user=user)
 
 
-@app.route('/profile/settings', methods=['GET', 'POST'])
+@app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
-def profile_settings():
-    account_setting = AccountSetting()
-
-    social_media = SocialMedia()
-
-    change_password = ChangePassword()
-
-    upload_avatar = UploadPhoto()
-
+def profile_edit():
+    params = {}
+    params['messages'] = {}
     db_sess = db_session.create_session()
-
     user = db_sess.query(User).filter(User.id == current_user.id).first()
 
-    if account_setting.validate_on_submit():
-        if account_setting.name.data:
-            user.name = account_setting.name.data
+    personal_info = PersonalInformation()
+    params['form'] = personal_info
 
-        if account_setting.surname.data:
-            user.surname = account_setting.surname.data
+    if personal_info.validate_on_submit():
 
-        if account_setting.email.data == account_setting.email_again != '':
-            user.email = account_setting.email.data
+        user.name = personal_info.name.data
+        user.surname = personal_info.surname.data
+        user.gender = personal_info.gender.data
+        user.age = personal_info.age.data
+        user.marital_status = personal_info.marital_status.data
+        user.city = personal_info.city.data
+        user.address = personal_info.address.data
 
-    if social_media.validate_on_submit():
-        if social_media.vk.data:
-            user.vk = social_media.vk.data
-        user.show_vk = social_media.show_vk.data
+        if personal_info.photo.data:
+            filename = photos.save(personal_info.photo.data)
+            file_url = photos.url(filename)
 
-        if social_media.facebook.data:
-            user.facebook = social_media.facebook.data
-        user.show_facebook = social_media.show_facebook.data
+            os.chdir('static')
+            os.chdir('uploaded_photos')
 
-        if social_media.twitter.data:
-            user.twitter = social_media.twitter.data
-        user.show_twitter = social_media.show_twitter.data
+            fname = f'id{current_user.id}_avatar.jpg'
 
-        if social_media.instagram.data:
-            user.instagram = social_media.instagram.data
-        user.show_instagram = social_media.show_instagram.data
+            if os.path.exists(fname):
+                os.remove(fname)
+            os.rename(filename, fname)
 
-        if social_media.youtube.data:
-            user.youtube = social_media.youtube.data
-        user.show_youtube = social_media.show_youtube.data
+            crop_max_square(Image.open(fname)).save(fname)
+
+            os.chdir('..')
+            os.chdir('..')
+
+            user.avatar = f'/static/uploaded_photos/{fname}'
+
+    change_password = ChangePassword()
+    params['change_password'] = change_password
 
     if change_password.validate_on_submit():
         if user.check_password(
@@ -191,33 +192,50 @@ def profile_settings():
             user.set_password(change_password.new_pass.data)
             db_sess.commit()
             return redirect('/logout')
+        if not user.check_password(change_password.old_pass.data):
+            params['messages']['old_pass'] = 'Wrong old password'
+        if not change_password.new_pass.data == change_password.new_pass_again.data:
+            params['messages']['new_pass_again'] = 'New passwords do not match'
 
-    if upload_avatar.validate_on_submit():
-        filename = photos.save(upload_avatar.photo.data)
-        file_url = photos.url(filename)
+    contact_info = ContactInformation()
+    params['contact_info'] = contact_info
+    if contact_info.validate_on_submit():
+        if contact_info.email.data == current_user.email and contact_info.new_email.data == contact_info.new_email_again.data:
+            if contact_info.new_email.data:
+                user.email = contact_info.new_email_again.data
+        if contact_info.email.data != current_user.email:
+            params['messages']['email'] = 'Wrong old Email'
+        if contact_info.new_email.data != contact_info.new_email_again.data:
+            params['messages']['new_email_again'] = 'New Emails do not match'
 
-        os.chdir('static')
-        os.chdir('uploaded_photos')
+        if contact_info.phone.data:
+            user.phone = contact_info.phone.data
+        if contact_info.url:
+            user.url = contact_info.url.data
 
-        fname = f'{current_user.name.lower()}_{current_user.surname.lower()}_avatar.jpg'
+        if contact_info.vk.data:
+            user.vk = contact_info.vk.data
+        user.show_vk = contact_info.show_vk.data
 
-        if os.path.exists(fname):
-            os.remove(fname)
-        os.rename(filename, fname)
+        if contact_info.facebook.data:
+            user.facebook = contact_info.facebook.data
+        user.show_facebook = contact_info.show_facebook.data
 
-        crop_max_square(Image.open(fname)).save(fname)
+        if contact_info.twitter.data:
+            user.twitter = contact_info.twitter.data
+        user.show_twitter = contact_info.show_twitter.data
 
-        os.chdir('..')
-        os.chdir('..')
+        if contact_info.instagram.data:
+            user.instagram = contact_info.instagram.data
+        user.show_instagram = contact_info.show_instagram.data
 
-        user.avatar = f'/static/uploaded_photos/{fname}'
+        if contact_info.youtube.data:
+            user.youtube = contact_info.youtube.data
+        user.show_youtube = contact_info.show_youtube.data
 
     db_sess.commit()
 
-    return render_template('profile_settings.html', account_setting=account_setting,
-                           social_media=social_media, change_password=change_password,
-                           upload_avatar=upload_avatar)
-
+    return render_template('edit_profile.html', **params)
 
 
 @app.route('/messages')
