@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="iq-card">
+                    <div class="iq-card-body p-0">
+                        <div class="iq-edit-list">
+                            <ul class="iq-edit-profile d-flex nav nav-pills">
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link active" data-toggle="pill" href="#personal-information">
+                                        Personal Information
+                                    </a>
+                                </li>
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link" data-toggle="pill" href="#chang-pwd">
+                                        Change Password
+                                    </a>
+                                </li>
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link" data-toggle="pill" href="#emailandsms">
+                                        Email and SMS
+                                    </a>
+                                </li>
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link" data-toggle="pill" href="#manage-contact">
+                                        Manage Contact
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="iq-edit-list-data">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                            <div class="iq-card">
+                                <div class="iq-card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Personal Information</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-card-body">
+                                    <form action="" method="post" enctype="multipart/form-data">
+                                        {{ form.hidden_tag() }}
+                                        <div class="form-group row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="profile-img-edit">
+                                                    <img class="profile-pic" src="{{current_user.avatar}}"
+                                                         alt="profile-pic" style="max-width: 150px; max-height: 150px">
+                                                    <h4 class="card-title" id="update_avatar">{{form.photo()}}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% for error in form.photo.errors %}
+                                        <div class="form-group col-sm-6">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}}</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+
+                                        <div class=" row align-items-center">
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="fname">{{form.name.label.text}}</label>
+                                                {{form.name(type="text", class="form-control", id="fname",
+                                                value=current_user.name)}}
+                                            </div>
+
+                                            {% for error in form.name.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Name field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="lname">{{form.surname.label.text}}</label>
+                                                {{form.surname(type="text", class="form-control", id="lname",
+                                                value=current_user.surname)}}
+                                            </div>
+
+                                            {% for error in form.surname.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Surname field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="gender">{{form.gender.label.text}}</label>
+                                                {{form.gender(type="text", class="form-control", id="gender",
+                                                value=current_user.gender)}}
+                                            </div>
+
+                                            {% for error in form.gender.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Gender field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="age">{{form.age.label.text}}</label>
+                                                {{form.age(type="text", class="form-control", id="age",
+                                                value=current_user.age)}}
+                                            </div>
+
+                                            {% for error in form.age.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Age field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="marital_status">{{form.marital_status.label.text}}</label>
+                                                {{form.marital_status(class="form-control", id="marital_status",
+                                                value=current_user.marital_status)}}
+                                            </div>
+
+                                            {% for error in form.marital_status.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Marital Status field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-6">
+                                                <label for="city">{{form.city.label.text}}</label>
+                                                {{form.city(class="form-control", id="city", value=current_user.city)}}
+                                            </div>
+
+                                            {% for error in form.city.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in City field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                            <div class="form-group col-sm-12">
+                                                <label for="address">{{form.address.label.text}}</label>
+                                                {{form.address(class="form-control", id="address",
+                                                placeholder=current_user.address)}}
+                                            </div>
+
+                                            {% for error in form.address.errors %}
+                                            <div class="form-group col-sm-6">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <div class="iq-alert-icon">
+                                                        <i class="ri-alert-line"></i>
+                                                    </div>
+                                                    <div class="iq-alert-text">{{error}} in Address field</div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                        </div>
+                                        {{form.submit(class="btn btn-primary mr-2")}}
+                                        <button type="reset" class="btn iq-bg-danger">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="chang-pwd" role="tabpanel">
+                            <div class="iq-card">
+                                <div class="iq-card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Change Password</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-card-body">
+                                    <form action="" method="post">
+                                        {{ change_password.hidden_tag() }}
+                                        <div class="form-group">
+                                            <label for="upass">{{change_password.old_pass.label}}</label>
+                                            {{change_password.old_pass(type="password", class="form-control",
+                                            id="upass")}}
+                                        </div>
+
+                                        {% if messages.get('old_pass', '') %}
+                                        <div class="form-group col-sm-6">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{messages['old_pass']}}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <label for="unewpass">{{change_password.new_pass.label}}</label>
+                                            {{change_password.new_pass(type="password", class="form-control",
+                                            id="unewpass")}}
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="unewpass_again">{{change_password.new_pass_again.label}}</label>
+                                            {{change_password.new_pass_again(type="password", class="form-control",
+                                            id="unewpass_again")}}
+                                        </div>
+
+                                        {% if messages.get('new_pass_again', '') %}
+                                        <div class="form-group col-sm-6">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{messages['new_pass_again']}}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                        <button type="reset" class="btn iq-bg-danger">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="emailandsms" role="tabpanel">
+                            <div class="iq-card">
+                                <div class="iq-card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Email and SMS</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-card-body">
+                                    <form>
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-md-3" for="emailnotification">Email Notification:</label>
+                                            <div class="col-md-9 custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       id="emailnotification" checked="">
+                                                <label class="custom-control-label" for="emailnotification"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-md-3" for="smsnotification">SMS Notification:</label>
+                                            <div class="col-md-9 custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="smsnotification"
+                                                       checked="">
+                                                <label class="custom-control-label" for="smsnotification"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-md-3" for="npass">When To Email</label>
+                                            <div class="col-md-9">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email01">
+                                                    <label class="custom-control-label" for="email01">You have new
+                                                        notifications.</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email02">
+                                                    <label class="custom-control-label" for="email02">You're sent a
+                                                        direct message</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email03"
+                                                           checked="">
+                                                    <label class="custom-control-label" for="email03">Someone adds you
+                                                        as a connection</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row align-items-center">
+                                            <label class="col-md-3" for="npass">When To Escalate Emails</label>
+                                            <div class="col-md-9">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email04">
+                                                    <label class="custom-control-label" for="email04"> Upon new
+                                                        order.</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email05">
+                                                    <label class="custom-control-label" for="email05"> New membership
+                                                        approval</label>
+                                                </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="email06"
+                                                           checked="">
+                                                    <label class="custom-control-label" for="email06"> Member
+                                                        registration</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                        <button type="reset" class="btn iq-bg-danger">Cancle</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="manage-contact" role="tabpanel">
+                            <div class="iq-card">
+                                <div class="iq-card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Manage Contact</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-card-body">
+                                    <form method="post">
+                                        {{ contact_info.hidden_tag() }}
+
+                                        <div class="form-group">
+                                            <label for="cno">{{contact_info.phone.label.text}}</label>
+                                            {{contact_info.phone(class="form-control", id="cno",
+                                            value=current_user.phone)}}
+                                        </div>
+                                        {% for error in contact_info.phone.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Contact Number field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% if messages.get('phone', '') %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{messages['phone']}}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <label for="email">{{contact_info.email.label.text}}</label>
+                                            {{contact_info.email(class="form-control", id="email", value=current_user.email)}}
+                                        </div>
+                                        {% for error in contact_info.email.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Email field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% if messages.get('email', '') %}
+                                        <div class="form-group col-sm-6">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{messages['email']}}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <label for="new_email">{{contact_info.new_email.label.text}}</label>
+                                            {{contact_info.new_email(class="form-control", id="new_email")}}
+                                        </div>
+                                        {% for error in contact_info.new_email.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in New Email field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="new_email_again">{{contact_info.new_email_again.label.text}}</label>
+                                            {{contact_info.new_email_again(class="form-control", id="new_email_again")}}
+                                        </div>
+                                        {% for error in contact_info.new_email_again.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in New Email (again) field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% if messages.get('new_email_again', '') %}
+                                        <div class="form-group col-sm-6">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{messages['new_email_again']}}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <label for="url">{{contact_info.url.label.text}}</label>
+                                            {{contact_info.url(class="form-control", id="url", value=current_user.url)}}
+                                        </div>
+                                        {% for error in contact_info.url.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Url field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="vk">{{contact_info.vk.label.text}}</label>
+                                            {{contact_info.vk(class="form-control", id="vk", value=current_user.vk)}}
+                                            <div class="custom-control custom-checkbox">
+                                                {% if current_user.show_vk %}
+                                                    {{contact_info.show_vk(type="checkbox", class="custom-control-input",
+                                                    id="vkcheck", checked="")}}
+                                                {% else %}
+                                                    {{contact_info.show_vk(type="checkbox", class="custom-control-input",
+                                                    id="vkcheck")}}
+                                                {% endif %}
+                                                <label class="custom-control-label"
+                                                       for="vkcheck">{{contact_info.show_vk.label}}</label>
+                                            </div>
+                                        </div>
+                                        {% for error in contact_info.vk.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in VK field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="facebook">{{contact_info.facebook.label.text}}</label>
+                                            {{contact_info.facebook(class="form-control", id="facebook", value=current_user.facebook)}}
+                                            <div class="custom-control custom-checkbox">
+                                                {% if current_user.show_facebook %}
+                                                    {{contact_info.show_facebook(type="checkbox", class="custom-control-input",
+                                                    id="fbcheck", checked="")}}
+                                                {% else %}
+                                                    {{contact_info.show_facebook(type="checkbox", class="custom-control-input",
+                                                    id="fbcheck")}}
+                                                {% endif %}
+                                                <label class="custom-control-label"
+                                                       for="fbcheck">{{contact_info.show_facebook.label}}</label>
+                                            </div>
+                                        </div>
+                                        {% for error in contact_info.facebook.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Facebook field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="twitter">{{contact_info.twitter.label.text}}</label>
+                                            {{contact_info.twitter(class="form-control", id="twitter", value=current_user.twitter)}}
+                                            <div class="custom-control custom-checkbox">
+                                                {% if current_user.show_twitter %}
+                                                    {{contact_info.show_twitter(type="checkbox", class="custom-control-input",
+                                                    id="twittercheck", checked="")}}
+                                                {% else %}
+                                                    {{contact_info.show_twitter(type="checkbox", class="custom-control-input",
+                                                    id="twittercheck")}}
+                                                {% endif %}
+                                                <label class="custom-control-label"
+                                                       for="twittercheck">{{contact_info.show_twitter.label}}</label>
+                                            </div>
+                                        </div>
+                                        {% for error in contact_info.twitter.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Twitter field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="instagram">{{contact_info.instagram.label.text}}</label>
+                                            {{contact_info.instagram(class="form-control", id="instagram", value=current_user.instagram)}}
+                                            <div class="custom-control custom-checkbox">
+                                                {% if current_user.show_instagram %}
+                                                    {{contact_info.show_instagram(type="checkbox", class="custom-control-input",
+                                                    id="instagramcheck", checked="")}}
+                                                {% else %}
+                                                    {{contact_info.show_instagram(type="checkbox", class="custom-control-input",
+                                                    id="instagramcheck")}}
+                                                {% endif %}
+                                                <label class="custom-control-label"
+                                                       for="instagramcheck">{{contact_info.show_instagram.label}}</label>
+                                            </div>
+                                        </div>
+                                        {% for error in contact_info.instagram.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Instagram field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <div class="form-group">
+                                            <label for="youtube">{{contact_info.youtube.label.text}}</label>
+                                            {{contact_info.youtube(class="form-control", id="youtube", value=current_user.youtube)}}
+                                            <div class="custom-control custom-checkbox">
+                                                {% if current_user.show_youtube %}
+                                                    {{contact_info.show_youtube(type="checkbox", class="custom-control-input",
+                                                    id="ytcheck", checked="")}}
+                                                {% else %}
+                                                    {{contact_info.show_youtube(type="checkbox", class="custom-control-input",
+                                                    id="ytcheck")}}
+                                                {% endif %}
+                                                <label class="custom-control-label"
+                                                       for="ytcheck">{{contact_info.show_youtube.label}}</label>
+                                            </div>
+                                        </div>
+                                        {% for error in contact_info.instagram.errors %}
+                                        <div class="form-group">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="iq-alert-icon">
+                                                    <i class="ri-alert-line"></i>
+                                                </div>
+                                                <div class="iq-alert-text">{{error}} in Instagram field</div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                        <button type="reset" class="btn iq-bg-danger">Cancle</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
