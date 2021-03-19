@@ -52,7 +52,10 @@
                                                 <div class="profile-img-edit">
                                                     <img class="profile-pic" src="{{current_user.avatar}}"
                                                          alt="profile-pic" style="max-width: 150px; max-height: 150px">
-                                                    <h4 class="card-title" id="update_avatar">{{form.photo()}}</h4>
+                                                    <div class="p-image">
+                                                        <i class="ri-pencil-line upload-button"></i>
+                                                        {{form.photo(class="file-upload", type="file", accept="image/*")}}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -366,7 +369,8 @@
 
                                         <div class="form-group">
                                             <label for="email">{{contact_info.email.label.text}}</label>
-                                            {{contact_info.email(class="form-control", id="email", value=current_user.email)}}
+                                            {{contact_info.email(class="form-control", id="email",
+                                            value=current_user.email)}}
                                         </div>
                                         {% for error in contact_info.email.errors %}
                                         <div class="form-group">
@@ -449,11 +453,11 @@
                                             {{contact_info.vk(class="form-control", id="vk", value=current_user.vk)}}
                                             <div class="custom-control custom-checkbox">
                                                 {% if current_user.show_vk %}
-                                                    {{contact_info.show_vk(type="checkbox", class="custom-control-input",
-                                                    id="vkcheck", checked="")}}
+                                                {{contact_info.show_vk(type="checkbox", class="custom-control-input",
+                                                id="vkcheck", checked="")}}
                                                 {% else %}
-                                                    {{contact_info.show_vk(type="checkbox", class="custom-control-input",
-                                                    id="vkcheck")}}
+                                                {{contact_info.show_vk(type="checkbox", class="custom-control-input",
+                                                id="vkcheck")}}
                                                 {% endif %}
                                                 <label class="custom-control-label"
                                                        for="vkcheck">{{contact_info.show_vk.label}}</label>
@@ -472,14 +476,17 @@
 
                                         <div class="form-group">
                                             <label for="facebook">{{contact_info.facebook.label.text}}</label>
-                                            {{contact_info.facebook(class="form-control", id="facebook", value=current_user.facebook)}}
+                                            {{contact_info.facebook(class="form-control", id="facebook",
+                                            value=current_user.facebook)}}
                                             <div class="custom-control custom-checkbox">
                                                 {% if current_user.show_facebook %}
-                                                    {{contact_info.show_facebook(type="checkbox", class="custom-control-input",
-                                                    id="fbcheck", checked="")}}
+                                                {{contact_info.show_facebook(type="checkbox",
+                                                class="custom-control-input",
+                                                id="fbcheck", checked="")}}
                                                 {% else %}
-                                                    {{contact_info.show_facebook(type="checkbox", class="custom-control-input",
-                                                    id="fbcheck")}}
+                                                {{contact_info.show_facebook(type="checkbox",
+                                                class="custom-control-input",
+                                                id="fbcheck")}}
                                                 {% endif %}
                                                 <label class="custom-control-label"
                                                        for="fbcheck">{{contact_info.show_facebook.label}}</label>
@@ -498,14 +505,17 @@
 
                                         <div class="form-group">
                                             <label for="twitter">{{contact_info.twitter.label.text}}</label>
-                                            {{contact_info.twitter(class="form-control", id="twitter", value=current_user.twitter)}}
+                                            {{contact_info.twitter(class="form-control", id="twitter",
+                                            value=current_user.twitter)}}
                                             <div class="custom-control custom-checkbox">
                                                 {% if current_user.show_twitter %}
-                                                    {{contact_info.show_twitter(type="checkbox", class="custom-control-input",
-                                                    id="twittercheck", checked="")}}
+                                                {{contact_info.show_twitter(type="checkbox",
+                                                class="custom-control-input",
+                                                id="twittercheck", checked="")}}
                                                 {% else %}
-                                                    {{contact_info.show_twitter(type="checkbox", class="custom-control-input",
-                                                    id="twittercheck")}}
+                                                {{contact_info.show_twitter(type="checkbox",
+                                                class="custom-control-input",
+                                                id="twittercheck")}}
                                                 {% endif %}
                                                 <label class="custom-control-label"
                                                        for="twittercheck">{{contact_info.show_twitter.label}}</label>
@@ -524,14 +534,17 @@
 
                                         <div class="form-group">
                                             <label for="instagram">{{contact_info.instagram.label.text}}</label>
-                                            {{contact_info.instagram(class="form-control", id="instagram", value=current_user.instagram)}}
+                                            {{contact_info.instagram(class="form-control", id="instagram",
+                                            value=current_user.instagram)}}
                                             <div class="custom-control custom-checkbox">
                                                 {% if current_user.show_instagram %}
-                                                    {{contact_info.show_instagram(type="checkbox", class="custom-control-input",
-                                                    id="instagramcheck", checked="")}}
+                                                {{contact_info.show_instagram(type="checkbox",
+                                                class="custom-control-input",
+                                                id="instagramcheck", checked="")}}
                                                 {% else %}
-                                                    {{contact_info.show_instagram(type="checkbox", class="custom-control-input",
-                                                    id="instagramcheck")}}
+                                                {{contact_info.show_instagram(type="checkbox",
+                                                class="custom-control-input",
+                                                id="instagramcheck")}}
                                                 {% endif %}
                                                 <label class="custom-control-label"
                                                        for="instagramcheck">{{contact_info.show_instagram.label}}</label>
@@ -550,14 +563,17 @@
 
                                         <div class="form-group">
                                             <label for="youtube">{{contact_info.youtube.label.text}}</label>
-                                            {{contact_info.youtube(class="form-control", id="youtube", value=current_user.youtube)}}
+                                            {{contact_info.youtube(class="form-control", id="youtube",
+                                            value=current_user.youtube)}}
                                             <div class="custom-control custom-checkbox">
                                                 {% if current_user.show_youtube %}
-                                                    {{contact_info.show_youtube(type="checkbox", class="custom-control-input",
-                                                    id="ytcheck", checked="")}}
+                                                {{contact_info.show_youtube(type="checkbox",
+                                                class="custom-control-input",
+                                                id="ytcheck", checked="")}}
                                                 {% else %}
-                                                    {{contact_info.show_youtube(type="checkbox", class="custom-control-input",
-                                                    id="ytcheck")}}
+                                                {{contact_info.show_youtube(type="checkbox",
+                                                class="custom-control-input",
+                                                id="ytcheck")}}
                                                 {% endif %}
                                                 <label class="custom-control-label"
                                                        for="ytcheck">{{contact_info.show_youtube.label}}</label>
