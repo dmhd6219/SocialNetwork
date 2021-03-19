@@ -238,6 +238,12 @@ def profile_edit():
     return render_template('edit_profile.html', **params)
 
 
+@app.route('/profile/privacy')
+@login_required
+def privacy_settings():
+    return render_template('comingsoon.html')
+
+
 @app.route('/messages')
 @login_required
 def messages():
