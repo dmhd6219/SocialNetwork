@@ -7,4 +7,4 @@ from wtforms.validators import DataRequired
 
 
 class CreatePost(FlaskForm):
-    text = StringField('Write something here...', validators=[DataRequired()])
+    text = TextAreaField('Write something here...', validators=[DataRequired()])

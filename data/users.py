@@ -7,6 +7,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .db_session import SqlAlchemyBase
 from .posts import Post
 
+friends = sqlalchemy.Table(
+    'friendships', SqlAlchemyBase.metadata,
+    sqlalchemy.Column('user_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'), index=True),
+    sqlalchemy.Column('friend_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id')),
+    sqlalchemy.UniqueConstraint('user_id', 'friend_id', name='unique_friendships'))
+
 
 class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
@@ -71,11 +77,28 @@ class User(SqlAlchemyBase, UserMixin):
     marital_status = sqlalchemy.Column(sqlalchemy.String, default='')
     show_marital_status = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
+    spotify = sqlalchemy.Column(sqlalchemy.String, default='')
+
+    friends = orm.relationship('User',
+                               secondary=friends,
+                               primaryjoin=id == friends.c.user_id,
+                               secondaryjoin=id == friends.c.friend_id)
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
+
+    def become_friends(self, friend):
+        if friend not in self.friends:
+            self.friends.append(friend)
+            friend.friends.append(self)
+
+    def delete_friend(self, friend):
+        if friend in self.friends:
+            self.friends.remove(friend)
+            friend.friends.remove(self)
 
     def create_post(self, text, db_sess):
         post = Post()

@@ -129,8 +129,9 @@ def profile():
     if create_post.validate_on_submit():
         post_list_resource.post(current_user.id)
 
-    return render_template('profile.html', form=create_post,
-                           posts=db_sess.query(Post).filter(Post.user_id == current_user.id))
+    posts = list(db_sess.query(Post).filter(Post.user_id == current_user.id))
+
+    return render_template('profile.html', form=create_post, posts=posts)
 
 
 @app.route('/id<id>')
@@ -138,8 +139,15 @@ def profile():
 def user(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == id).first()
+    posts = db_sess.query(Post).filter(Post.user_id == user.id)
 
-    return render_template('user.html', user=user)
+    return render_template('user.html', user=user, posts=list(posts))
+
+@app.route('/friends')
+@login_required
+def friends():
+
+    return render_template('friends.html')
 
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
