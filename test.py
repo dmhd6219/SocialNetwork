@@ -13,7 +13,4 @@ user2 = db_sess.query(User).get(2)
 print(user2 in user1.friends)
 user1.become_friends(user2)
 db_sess.commit()
-print(user2 in user1.friends)
-# they are friends now
-print(requests.delete('http://127.0.0.1:8080/api/friends/1/2').json())
-print(user2 in user1.friends)
+

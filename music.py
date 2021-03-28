@@ -7,8 +7,6 @@ import spotipy
 from flask import session, request, redirect, render_template, abort
 from flask_login import login_required
 
-from forms.search import SearchForm
-
 caches_folder = './.spotify_caches/'
 if not os.path.exists(caches_folder):
     os.makedirs(caches_folder)
@@ -58,11 +56,7 @@ def music():
     # Step 4. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        return redirect(f'/music/search/{search_form.data.data}')
-
-    return render_template('music.html', spotify=spotify, search_form=search_form)
+    return render_template('music.html', spotify=spotify)
 
 
 @blueprint.route('/music/search/<data>')

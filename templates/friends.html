@@ -37,7 +37,15 @@
                                                     <p>Lorem Ipsum is simply dummy text of the</p>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Friend</button>
+                                            {% if friend in current_user.friends %}
+                                            <button type="button" class="btn btn-outline-danger rounded-pill mb-3" onclick="DeleteFriend({{current_user.id}}, {{friend.id}})">
+                                                Delete from friends
+                                            </button>
+                                            {% elif friend not in current_user.friends %}
+                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="AddFriend({{current_user.id}}, {{friend.id}})">
+                                                Add as friend
+                                            </button>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
