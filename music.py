@@ -9,7 +9,7 @@ from flask_login import login_required, current_user
 
 from data import db_session
 from data.users import User
-from utils.spotify import spotify_login_required, session_cache_path
+from utils.spotify import spotify_login_required, session_cache_path, SCOPE
 
 blueprint = flask.Blueprint(
     'music',
@@ -17,13 +17,19 @@ blueprint = flask.Blueprint(
     template_folder='templates'
 )
 
+
 @blueprint.route('/music', methods=['GET', 'POST'])
 @login_required
 @spotify_login_required
 def music(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
 
-    return render_template('music.html', spotify=spotify, current_user=db_sess.query(User).get(current_user.id))
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
+
+    return render_template('music.html', **params)
 
 
 @blueprint.route('/music/search/<data>')
@@ -34,10 +40,13 @@ def search_music(data, spotify: spotipy.Spotify):
     params = {
         'artists': spotify.search(q=data, type='artist', limit=6)['artists']['items'],
         'albums': spotify.search(q=data, type='album', limit=6)['albums']['items'],
-        'tracks': spotify.search(q=data, type='track', limit=6)['tracks']['items']
+        'tracks': spotify.search(q=data, type='track', limit=6)['tracks']['items'],
+
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
     }
 
-    return render_template('search.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('search.html', **params)
 
 
 @blueprint.route('/music/artist/<id>')
@@ -45,7 +54,11 @@ def search_music(data, spotify: spotipy.Spotify):
 @spotify_login_required
 def artist(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     try:
         params['artist'] = spotify.artist(id)
@@ -56,7 +69,7 @@ def artist(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
-    return render_template('artist.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('artist.html', **params)
 
 
 @blueprint.route('/music/artist/<id>/albums')
@@ -64,7 +77,10 @@ def artist(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def artist_albums(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     try:
         params['artist'] = spotify.artist(id)
@@ -72,7 +88,7 @@ def artist_albums(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
-    return render_template('artist_albums.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('artist_albums.html', **params)
 
 
 @blueprint.route('/music/artist/<id>/singles')
@@ -80,7 +96,10 @@ def artist_albums(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def artist_singles(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     try:
         params['artist'] = spotify.artist(id)
@@ -88,7 +107,7 @@ def artist_singles(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
-    return render_template('artist_singles.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('artist_singles.html', **params)
 
 
 @blueprint.route('/music/artist/<id>/appears_on')
@@ -96,7 +115,10 @@ def artist_singles(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def artist_appears_on(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     try:
         params['artist'] = spotify.artist(id)
@@ -104,7 +126,7 @@ def artist_appears_on(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
-    return render_template('artist_appears_on.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('artist_appears_on.html', **params)
 
 
 @blueprint.route('/music/playlist/<id>')
@@ -112,7 +134,10 @@ def artist_appears_on(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def playlist(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     # id = 2duj5GBXwLRdjqV9hjXy4o
 
@@ -127,7 +152,7 @@ def playlist(id, spotify: spotipy.Spotify):
 
     pprint(params['playlist']['tracks']['items'])
 
-    return render_template('playlist.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('playlist.html', **params)
 
 
 @blueprint.route('/music/track/<id>')
@@ -135,7 +160,10 @@ def playlist(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def track(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     # id = 77yYxfpXB64ktXPVdU9xcF
 
@@ -151,7 +179,7 @@ def track(id, spotify: spotipy.Spotify):
 
     pprint(params['music'])
 
-    return render_template('track.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('track.html', **params)
 
 
 @blueprint.route('/music/album/<id>')
@@ -159,7 +187,10 @@ def track(id, spotify: spotipy.Spotify):
 @spotify_login_required
 def album(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {}
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
     # id = 1zpglRcWM6VnMkpsFkHIdt
 
@@ -172,7 +203,7 @@ def album(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
-    return render_template('album.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('album.html', **params)
 
 
 @blueprint.route('/music/new')
@@ -181,8 +212,11 @@ def album(id, spotify: spotipy.Spotify):
 def new_music(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
 
-    params = {'new_music': spotify.new_releases('RU')}
-    return render_template('new_music.html', **params, current_user=db_sess.query(User).get(current_user.id))
+    params = {'new_music': spotify.new_releases('RU'),
+              'current_user': db_sess.query(User).get(current_user.id),
+              'spotify': spotify,
+              }
+    return render_template('new_music.html', **params)
 
 
 @blueprint.route('/music/track/top')
@@ -190,9 +224,13 @@ def new_music(spotify: spotipy.Spotify):
 @spotify_login_required
 def top_tracks(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {'tracks': spotify.current_user_top_tracks(time_range='short_term')}
+    params = {'tracks': spotify.current_user_top_tracks(time_range='short_term'),
+              'current_user': db_sess.query(User).get(current_user.id),
+              'spotify': spotify,
+              }
 
-    return render_template('top_tracks.html', **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('top_tracks.html', **params)
+
 
 
 @blueprint.route('/music/artist/top')
@@ -200,9 +238,12 @@ def top_tracks(spotify: spotipy.Spotify):
 @spotify_login_required
 def top_artists(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    params = {'artists': spotify.current_user_top_artists(time_range='short_term')}
+    params = {'artists': spotify.current_user_top_artists(time_range='short_term'),
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
 
-    return render_template('top_artists.html', **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('top_artists.html', **params)
 
 
 @blueprint.route('/spotify_sign_out')

@@ -77,7 +77,8 @@ class User(SqlAlchemyBase, UserMixin):
     marital_status = sqlalchemy.Column(sqlalchemy.String, default='')
     show_marital_status = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
 
-    spotify = sqlalchemy.Column(sqlalchemy.String, default='')
+    spotify_id = sqlalchemy.Column(sqlalchemy.String, default='')
+    spotify_token = sqlalchemy.Column(sqlalchemy.String, default='')
 
     friends = orm.relationship('User',
                                secondary=friends,

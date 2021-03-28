@@ -27,8 +27,9 @@ from forms.search import SearchForm
 from forms.upload import photos, UploadPhoto
 from forms.user import RegisterUser, LoginUser
 
-
 from PIL import Image
+
+from utils.spotify import spotify_login_required, SCOPE
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -101,7 +102,11 @@ def register():
         login_user(user, remember=form.remember_me.data)
         return redirect("/")
 
-    return render_template('register.html', form=form, current_user=db_sess.query(User).get(current_user.id))
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id)
+    }
+
+    return render_template('register.html', form=form, **params)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -118,7 +123,12 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', form=form, current_user=db_sess.query(User).get(current_user.id))
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id)
+    }
+
+    return render_template('login.html', form=form, **params)
 
 
 @app.route('/logout')
@@ -130,40 +140,61 @@ def logout():
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
-def profile():
+@spotify_login_required
+def profile(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
     user = db_sess.query(User).get(current_user.id)
 
     posts = list(db_sess.query(Post).filter(Post.user_id == user.id))
 
-    return render_template('profile.html', posts=posts, current_user=user, )
+    params = {
+        'current_user': user,
+        'spotify': spotify,
+    }
+
+    return render_template('profile.html', posts=posts, **params)
 
 
 @app.route('/id<id>')
 @login_required
-def user(id):
+@spotify_login_required
+def user(id, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
     user = db_sess.query(User).get(id)
     posts = db_sess.query(Post).filter(Post.user_id == user.id)
 
     curr_user = db_sess.query(User).get(current_user.id)
 
+    params = {
+        'current_user': curr_user,
+        'spotify': spotify,
+    }
 
-    return render_template('user.html', user=user, posts=list(posts), current_user=curr_user)
+    return render_template('user.html', user=user, posts=list(posts), **params)
+
 
 @app.route('/friends')
 @login_required
-def friends():
+@spotify_login_required
+def friends(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    return render_template('friends.html', current_user=db_sess.query(User).get(current_user.id))
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
+
+    return render_template('friends.html', **params)
 
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
-def profile_edit():
-    params = {}
-    params['messages'] = {}
+@spotify_login_required
+def profile_edit(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
+
+    params = {'current_user': db_sess.query(User).get(current_user.id), 'spotify': spotify, 'messages': {}}
+
     user = db_sess.query(User).filter(User.id == current_user.id).first()
 
     personal_info = PersonalInformation()
@@ -251,20 +282,35 @@ def profile_edit():
 
     db_sess.commit()
 
-    return render_template('edit_profile.html', **params, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('edit_profile.html', **params)
 
 
 @app.route('/profile/privacy')
+@spotify_login_required
 @login_required
-def privacy_settings():
-    return render_template('comingsoon.html')
+def privacy_settings(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
+
+    return render_template('comingsoon.html', **params)
 
 
 @app.route('/messages')
 @login_required
-def messages():
+@spotify_login_required
+def messages(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
-    return render_template('chat.html', current_user=db_sess.query(User).get(current_user.id))
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
+
+    return render_template('chat.html', **params)
 
 
 @app.errorhandler(404)
@@ -286,6 +332,5 @@ if __name__ == '__main__':
     api.add_resource(rest_api.PostListResource, '/api/posts/<int:user_id>')
     api.add_resource(rest_api.PostResource, '/api/post/<int:post_id>')
     api.add_resource(rest_api.FriendsResource, '/api/friends/<int:user_id>/<int:friend_id>')
-
 
     app.run(threaded=True, port=8080, debug=True)

@@ -3,6 +3,10 @@ import uuid
 
 import spotipy
 from flask import session, request, redirect
+from flask_login import current_user
+
+from data import db_session
+from data.users import User
 
 caches_folder = './.spotify_caches/'
 if not os.path.exists(caches_folder):
@@ -18,6 +22,7 @@ SCOPE = 'user-top-read user-read-playback-position user-read-private user-read-e
 def session_cache_path():
     return caches_folder + session.get('uuid')
 
+
 def spotify_login_required(func):
     def wrapper():
         if not session.get('uuid'):
@@ -30,9 +35,13 @@ def spotify_login_required(func):
             cache_handler=cache_handler,
             show_dialog=True)
 
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).get(current_user.id)
+
         if request.args.get("code"):
             # Step 3. Being redirected from Spotify auth page
-            auth_manager.get_access_token(request.args.get("code"))
+            token = request.args.get("code")
+            auth_manager.get_access_token(token)
             return redirect('/music')
 
         if not auth_manager.validate_token(cache_handler.get_cached_token()):
@@ -42,6 +51,15 @@ def spotify_login_required(func):
 
         # Step 4. Signed in, display data
         spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+        if not user.spotify_id:
+            user.spotify_id = spotify.current_user()['id']
+            db_sess.commit()
+
+        token = spotify.auth_manager.get_access_token()['access_token']
+        if token != user.spotify_token:
+            user.spotify_token = token
+            db_sess.commit()
 
         return func(spotify)
 
