@@ -83,6 +83,7 @@ class FriendsResource(Resource):
 
         if friend not in user.friends:
             user.become_friends(friend)
+            session.commit()
             return jsonify({'success': 'OK'})
         else:
             return jsonify({'error': 'users are already friends'})
@@ -99,4 +100,5 @@ class FriendsResource(Resource):
             return jsonify({'error': 'users are not friends'})
         else:
             user.delete_friend(friend)
+            session.commit()
             return jsonify({'success': 'OK'})
