@@ -24,7 +24,7 @@ def session_cache_path():
 
 
 def spotify_login_required(func):
-    def wrapper():
+    def wrapper(**kwargs):
         if not session.get('uuid'):
             # Step 1. Visitor is unknown, give random ID
             session['uuid'] = str(uuid.uuid4())
@@ -61,7 +61,7 @@ def spotify_login_required(func):
             user.spotify_token = token
             db_sess.commit()
 
-        return func(spotify)
+        return func(**kwargs, spotify=spotify)
 
     wrapper.__name__ = func.__name__
     return wrapper

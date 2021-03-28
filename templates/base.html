@@ -209,21 +209,7 @@
                             <img class="rounded-circle avatar-50" src="{{friend.avatar}}" alt="">
                             <div class="media-body ml-3">
                                 <h6 class="mb-0"><a href="#">{{friend.name}} {{friend.surname}}</a></h6>
-                                {% if friend.spotify_token %}
-                                    {% set auth_manager = spotipy.oauth2.SpotifyOAuth(
-                                        scope=SCOPE,
-                                        cache_handler=cache_handler,
-                                        show_dialog=True) %}
-                                    {% set friend_spotify = auth_manager.get_access_token(friend.spotify_token) %}
-                                    {% set track = friend_spotify.current_user_playing_track() %}
-                                    {% if not track == None %}
-                                        <p class="mb-0">{{track['name']}}</p>
-                                    {% else %}
-                                        <p class="mb-0">he doesnt listening music now:(</p>
-                                    {% endif %}
-                                {% else %}
-                                <p class="mb-0">he doesnt have spotify:(</p>
-                                {% endif %}
+                                <p class="mb-0">who is it</p>
                             </div>
                         </div>
                         {% endfor %}
