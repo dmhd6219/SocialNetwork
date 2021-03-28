@@ -5,22 +5,11 @@ from pprint import pprint
 import flask
 import spotipy
 from flask import session, request, redirect, render_template, abort
-from flask_login import login_required
+from flask_login import login_required, current_user
 
-caches_folder = './.spotify_caches/'
-if not os.path.exists(caches_folder):
-    os.makedirs(caches_folder)
-
-SCOPE = 'user-top-read user-read-playback-position user-read-private user-read-email ' \
-        'playlist-read-private user-library-read user-library-modify playlist-read-collaborative ' \
-        'playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read ' \
-        'user-follow-modify user-read-playback-state user-modify-playback-state ' \
-        'user-read-currently-playing user-read-recently-played'
-
-
-def session_cache_path():
-    return caches_folder + session.get('uuid')
-
+from data import db_session
+from data.users import User
+from utils.spotify import spotify_login_required, session_cache_path
 
 blueprint = flask.Blueprint(
     'music',
@@ -28,98 +17,34 @@ blueprint = flask.Blueprint(
     template_folder='templates'
 )
 
-
 @blueprint.route('/music', methods=['GET', 'POST'])
 @login_required
-def music():
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
+@spotify_login_required
+def music(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
 
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        print(request.args.get("code"))
-        return redirect('/music')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_url)
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
-    return render_template('music.html', spotify=spotify)
+    return render_template('music.html', spotify=spotify, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/search/<data>')
 @login_required
-def search_music(data):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/search/{data}')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def search_music(data, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {
         'artists': spotify.search(q=data, type='artist', limit=6)['artists']['items'],
         'albums': spotify.search(q=data, type='album', limit=6)['albums']['items'],
         'tracks': spotify.search(q=data, type='track', limit=6)['tracks']['items']
     }
 
-    return render_template('search.html', spotify=spotify, **params)
+    return render_template('search.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/artist/<id>')
 @login_required
-def artist(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'music/artist/{id}')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def artist(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     try:
@@ -131,35 +56,14 @@ def artist(id):
     except:
         return abort(404)
 
-    return render_template('artist.html', spotify=spotify, **params)
+    return render_template('artist.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/artist/<id>/albums')
 @login_required
-def artist_albums(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'music/artist/{id}/albums')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def artist_albums(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     try:
@@ -168,35 +72,14 @@ def artist_albums(id):
     except:
         return abort(404)
 
-    return render_template('artist_albums.html', spotify=spotify, **params)
+    return render_template('artist_albums.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/artist/<id>/singles')
 @login_required
-def artist_singles(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'music/artist/{id}/singles')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def artist_singles(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     try:
@@ -205,35 +88,14 @@ def artist_singles(id):
     except:
         return abort(404)
 
-    return render_template('artist_singles.html', spotify=spotify, **params)
+    return render_template('artist_singles.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/artist/<id>/appears_on')
 @login_required
-def artist_appears_on(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'music/artist/{id}/appears_on')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def artist_appears_on(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     try:
@@ -242,35 +104,14 @@ def artist_appears_on(id):
     except:
         return abort(404)
 
-    return render_template('artist_appears_on.html', spotify=spotify, **params)
+    return render_template('artist_appears_on.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/playlist/<id>')
 @login_required
-def playlist(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/playlist/{id}')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def playlist(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     # id = 2duj5GBXwLRdjqV9hjXy4o
@@ -286,35 +127,14 @@ def playlist(id):
 
     pprint(params['playlist']['tracks']['items'])
 
-    return render_template('playlist.html', spotify=spotify, **params)
+    return render_template('playlist.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/track/<id>')
 @login_required
-def track(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/track/{id}')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def track(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     # id = 77yYxfpXB64ktXPVdU9xcF
@@ -331,35 +151,14 @@ def track(id):
 
     pprint(params['music'])
 
-    return render_template('track.html', spotify=spotify, **params)
+    return render_template('track.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/album/<id>')
 @login_required
-def album(id):
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/album/{id}')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def album(id, spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {}
 
     # id = 1zpglRcWM6VnMkpsFkHIdt
@@ -373,103 +172,42 @@ def album(id):
     except:
         return abort(404)
 
-    return render_template('album.html', spotify=spotify, **params)
+    return render_template('album.html', spotify=spotify, **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/new')
 @login_required
-def new_music():
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/new')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+@spotify_login_required
+def new_music(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
 
     params = {'new_music': spotify.new_releases('RU')}
-    return render_template('new_music.html', **params)
+    return render_template('new_music.html', **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/track/top')
 @login_required
-def top_tracks():
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/track/top')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def top_tracks(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {'tracks': spotify.current_user_top_tracks(time_range='short_term')}
 
-    return render_template('top_tracks.html', **params)
+    return render_template('top_tracks.html', **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/music/artist/top')
 @login_required
-def top_artists():
-    if not session.get('uuid'):
-        # Step 1. Visitor is unknown, give random ID
-        session['uuid'] = str(uuid.uuid4())
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope=SCOPE,
-        cache_handler=cache_handler,
-        show_dialog=True)
-
-    if request.args.get("code"):
-        # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect(f'/music/artist/top')
-
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        # Step 2. Display sign in link when no token
-        auth_url = auth_manager.get_authorize_url()
-        return redirect(auth_manager.get_authorize_url())
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
+@spotify_login_required
+def top_artists(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
     params = {'artists': spotify.current_user_top_artists(time_range='short_term')}
 
-    return render_template('top_artists.html', **params)
+    return render_template('top_artists.html', **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/spotify_sign_out')
-def sign_out():
+@spotify_login_required
+def sign_out(spotify: spotipy.Spotify):
     try:
         # Remove the CACHE file (.cache-test) so that a new user can authorize.
         os.remove(session_cache_path())
@@ -480,34 +218,21 @@ def sign_out():
 
 
 @blueprint.route('/playlists')
-def playlists():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+@spotify_login_required
+def playlists(spotify: spotipy.Spotify):
     return spotify.current_user_playlists()
 
 
 @blueprint.route('/currently_playing')
-def currently_playing():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+@spotify_login_required
+def currently_playing(spotify: spotipy.Spotify):
     track = spotify.current_user_playing_track()
     if not track is None:
         return track
     return "No track currently playing."
 
 
-@blueprint.route('/current_user')
-def get_current_user():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+@blueprint.route('/spotify_current_user')
+@spotify_login_required
+def get_current_user(spotify: spotipy.Spotify):
     return spotify.current_user()

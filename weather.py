@@ -1,11 +1,15 @@
 import flask
 import pyowm
+import spotipy
 from flask import render_template, redirect, abort
 from flask_login import login_required, current_user
 from pyowm import OWM
 from pyowm.utils import timestamps
 
+from data import db_session
+from data.users import User
 from forms.weather import WeatherForm
+from utils.spotify import spotify_login_required
 
 blueprint = flask.Blueprint(
     'weather',
@@ -19,20 +23,23 @@ mgr = owm.weather_manager()
 
 @blueprint.route('/weather', methods=['GET', 'POST'])
 @login_required
-def weather():
+@spotify_login_required
+def weather(spotify:spotipy.Spotify):
     if current_user.city:
         return redirect(f'/weather/{current_user.city}')
+    db_sess = db_session.create_session()
 
     form = WeatherForm()
     if form.validate_on_submit():
         return redirect(f'/weather/{form.city.data}')
 
-    return render_template('weather.html', form=form)
+    return render_template('weather.html', form=form, spotify=spotify, current_user=db_sess.query(User).get(current_user.id))
 
 
 @blueprint.route('/weather/<city>', methods=['GET', 'POST'])
 @login_required
-def weather_show(city):
+@spotify_login_required
+def weather_show(city, spotify:spotipy.Spotify):
     form = WeatherForm()
     if form.validate_on_submit():
         return redirect(f'/weather/{form.city.data}')
@@ -41,6 +48,8 @@ def weather_show(city):
         observation = mgr.weather_at_place(city)
     except pyowm.commons.exceptions.NotFoundError:
         return abort(404)
+    db_sess = db_session.create_session()
+
     w = observation.weather
 
     three_h_forecaster = mgr.forecast_at_place(city, '3h')
@@ -70,4 +79,4 @@ def weather_show(city):
 
               }
 
-    return render_template('weather_show.html', form=form, **params)
+    return render_template('weather_show.html', form=form, **params, spotify=spotify, current_user=db_sess.query(User).get(current_user.id))

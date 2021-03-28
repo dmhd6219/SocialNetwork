@@ -82,6 +82,10 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect('/profile')
+    db_sess = db_session.create_session()
+
     form = RegisterUser()
 
     if form.validate_on_submit():
@@ -91,23 +95,22 @@ def register():
         user.email = form.email.data
         user.set_password(form.password.data)
 
-        db_sess = db_session.create_session()
         db_sess.add(user)
         db_sess.commit()
 
         login_user(user, remember=form.remember_me.data)
         return redirect("/")
 
-    return render_template('register.html', form=form)
+    return render_template('register.html', form=form, current_user=db_sess.query(User).get(current_user.id))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect('/profile')
+    db_sess = db_session.create_session()
     form = LoginUser()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -115,7 +118,7 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, current_user=db_sess.query(User).get(current_user.id))
 
 
 @app.route('/logout')
@@ -151,8 +154,8 @@ def user(id):
 @app.route('/friends')
 @login_required
 def friends():
-
-    return render_template('friends.html')
+    db_sess = db_session.create_session()
+    return render_template('friends.html', current_user=db_sess.query(User).get(current_user.id))
 
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
@@ -248,7 +251,7 @@ def profile_edit():
 
     db_sess.commit()
 
-    return render_template('edit_profile.html', **params)
+    return render_template('edit_profile.html', **params, current_user=db_sess.query(User).get(current_user.id))
 
 
 @app.route('/profile/privacy')
@@ -260,7 +263,8 @@ def privacy_settings():
 @app.route('/messages')
 @login_required
 def messages():
-    return render_template('chat.html')
+    db_sess = db_session.create_session()
+    return render_template('chat.html', current_user=db_sess.query(User).get(current_user.id))
 
 
 @app.errorhandler(404)
