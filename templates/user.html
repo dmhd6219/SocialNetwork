@@ -74,6 +74,19 @@
                                         {% endif %}
                                     </ul>
                                 </div>
+                                <script>
+                                    function UserAction() {
+                                            var xhttp = new XMLHttpRequest();
+                                            xhttp.onreadystatechange = function() {
+                                                 if (this.readyState == 4 && this.status == 200) {
+                                                     alert(this.responseText);
+                                                 }
+                                            };
+                                            xhttp.open("POST", "/api/friends/{{current_user.id}}/{{user.id}}", true);
+                                            xhttp.setRequestHeader("Content-type", "application/json");
+                                            xhttp.send();
+                                        }
+                                </script>
                                 <div class="social-info">
                                     <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
                                         <li class="text-center pl-3">
@@ -94,7 +107,7 @@
                                                 Delete from friends
                                             </button>
                                             {% elif user not in current_user.friends %}
-                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3">Add
+                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="UserAction()">Add
                                                 as friend
                                             </button>
                                             {% endif %}

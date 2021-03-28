@@ -70,3 +70,33 @@ class PostListResource(Resource):
         session.add(post)
         session.commit()
         return jsonify({'success': 'OK'})
+
+
+class FriendsResource(Resource):
+    def post(self, user_id, friend_id):
+        abort_if_user_not_found(user_id)
+        abort_if_user_not_found(friend_id)
+
+        session = db_session.create_session()
+        user = session.query(User).get(user_id)
+        friend = session.query(User).get(friend_id)
+
+        if friend not in user.friends:
+            user.become_friends(friend)
+            return jsonify({'success': 'OK'})
+        else:
+            return jsonify({'error': 'users are already friends'})
+
+    def delete(self, user_id, friend_id):
+        abort_if_user_not_found(user_id)
+        abort_if_user_not_found(friend_id)
+
+        session = db_session.create_session()
+        user = session.query(User).get(user_id)
+        friend = session.query(User).get(friend_id)
+
+        if friend not in user.friends:
+            return jsonify({'error': 'users are not friends'})
+        else:
+            user.delete_friend(friend)
+            return jsonify({'success': 'OK'})

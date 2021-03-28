@@ -14,6 +14,7 @@ import weather
 from data import db_session
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_session import Session
 
 from data.posts import Post
 from data.users import User
@@ -26,6 +27,7 @@ from forms.search import SearchForm
 from forms.upload import photos, UploadPhoto
 from forms.user import RegisterUser, LoginUser
 
+
 from PIL import Image
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -33,8 +35,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = './.flask_session/'
 app.config['SECRET_KEY'] = 'spotify_project_secret_key'
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/uploaded_photos')
+
+Session(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -141,7 +146,11 @@ def user(id):
     user = db_sess.query(User).filter(User.id == id).first()
     posts = db_sess.query(Post).filter(Post.user_id == user.id)
 
-    return render_template('user.html', user=user, posts=list(posts), current_user=db_sess.query(User).get(current_user.id))
+    curr_user = db_sess.query(User).get(current_user.id)
+
+    curr_user.become_friends(user)
+
+    return render_template('user.html', user=user, posts=list(posts), current_user=curr_user)
 
 @app.route('/friends')
 @login_required
@@ -276,5 +285,6 @@ if __name__ == '__main__':
 
     api.add_resource(rest_api.PostListResource, '/api/posts/<int:user_id>')
     api.add_resource(rest_api.PostResource, '/api/posts/<int:post_id>')
+    api.add_resource(rest_api.FriendsResource, '/api/friends/<int:user_id>/<int:friend_id>')
 
     app.run(threaded=True, port=8080, debug=True)
