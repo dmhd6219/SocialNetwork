@@ -168,15 +168,35 @@ user.image
                                                          class="avatar-60 rounded-circle img-fluid">
                                                 </div>
 
-                                                <form class="post-text ml-3 w-100" action="" method="post">
-                                                    {{ form.hidden_tag() }}
-                                                    {{ form.text(type="text", class="form-control rounded",
-                                                    placeholder="Write something here...", style="border:none;") }}
+                                                <script>
+                                                    function CreatePost() {
+                                                        var http = new XMLHttpRequest();
+                                                        var url = '/api/posts/1';
+                                                        var params = `text=${document.getElementById('createpost').value}`;
+                                                        http.open('POST', url, true);
+
+                                                        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                                                        http.onreadystatechange = function () {//Call a function when the state changes.
+                                                            if (http.readyState == 4 && http.status == 200) {
+                                                                alert(http.responseText);
+                                                                location.reload();
+                                                            }
+                                                        }
+                                                        http.send(params);
+                                                    }
+                                                </script>
+
+                                                <div class="post-text ml-3 w-100">
+                                                    <textarea class="form-control rounded"
+                                                              placeholder="Write something here..." style="border:none;"
+                                                              id="createpost"></textarea>
                                                     <hr>
-                                                    <button type="submit" class="btn btn-primary d-block w-100 mt-3">
+                                                    <button class="btn btn-primary d-block w-100 mt-3"
+                                                            onclick="CreatePost()">
                                                         Post
                                                     </button>
-                                                </form>
+                                                </div>
 
                                             </div>
                                         </div>
@@ -249,9 +269,6 @@ user.image
                                                     </div>
                                                 </div>
                                                 <div class="user-post">
-                                                    <!-- POST IMAGE
-                                                   <a href="javascript:void();"><img src="images/page-img/p1.jpg" alt="post-image" class="img-fluid w-100" /></a>
-                                                   -->
                                                     <p>{{post.text}}</p>
                                                 </div>
                                                 <div class="comment-area mt-3">
@@ -278,55 +295,11 @@ user.image
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <!--
-                                                           <div class="total-comment-block">
-                                                              <div class="dropdown">
-                                                                 <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                                 20 Comment
-                                                                 </span>
-                                                              </div>
-                                                           </div>
-                                                           -->
                                                         </div>
-                                                        <!--
-                                                       <div class="share-block d-flex align-items-center feather-icon mr-3">
-                                                          <a href="javascript:void();"><i class="ri-share-line"></i>
-                                                          <span class="ml-1">99 Share</span></a>
-                                                       </div>
-                                                       -->
                                                     </div>
                                                     <hr>
                                                     <ul class="post-comments p-0 m-0">
-                                                        <!-- COMMENTS
-                                                       <li class="mb-2">
-                                                          <div class="d-flex flex-wrap">
-                                                             <div class="user-img">
-                                                                <img src="images/user/02.jpg" alt="userimg" class="avatar-35 rounded-circle img-fluid">
-                                                             </div>
-                                                             <div class="comment-data-block ml-3">
-                                                                <h6>Monty Carlo</h6>
-                                                                <p class="mb-0">Lorem ipsum dolor sit amet</p>
-                                                                <div class="d-flex flex-wrap align-items-center comment-activity">
-                                                                   <a href="javascript:void();">like</a>
-                                                                   <a href="javascript:void();">reply</a>
-                                                                   <a href="javascript:void();">translate</a>
-                                                                   <span> 5 min </span>
-                                                                </div>
-                                                             </div>
-                                                          </div>
-                                                       </li>
-                                                       -->
                                                     </ul>
-                                                    <!--
-                                                   <form class="comment-text d-flex align-items-center mt-3" action="javascript:void(0);">
-                                                      <input type="text" class="form-control rounded">
-                                                      <div class="comment-attagement d-flex">
-                                                         <a href="javascript:void();"><i class="ri-link mr-3"></i></a>
-                                                         <a href="javascript:void();"><i class="ri-user-smile-line mr-3"></i></a>
-                                                         <a href="javascript:void();"><i class="ri-camera-line mr-3"></i></a>
-                                                      </div>
-                                                   </form>
-                                                   -->
                                                 </div>
                                             </div>
                                             {% endfor %}
@@ -638,43 +611,45 @@ user.image
                                             <div class="iq-card-body p-0">
                                                 <div class="row">
                                                     {% for friend in current_user.friends %}
-                                                        <div class="col-md-6 col-lg-6 mb-3">
-                                                            <div class="iq-friendlist-block">
-                                                                <div class="d-flex align-items-center justify-content-between">
-                                                                    <div class="d-flex align-items-center">
-                                                                        <a href="#">
-                                                                            <img src="{{friend.avatar}}" alt="profile-img"
-                                                                                 class="img-fluid">
-                                                                        </a>
-                                                                        <div class="friend-info ml-3">
-                                                                            <h5>{{friend.name}} {{friend.surname}}</h5>
-                                                                            <p class="mb-0">{{friend.friends|length}} friends</p>
-                                                                        </div>
+                                                    <div class="col-md-6 col-lg-6 mb-3">
+                                                        <div class="iq-friendlist-block">
+                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                <div class="d-flex align-items-center">
+                                                                    <a href="#">
+                                                                        <img src="{{friend.avatar}}" alt="profile-img"
+                                                                             class="img-fluid">
+                                                                    </a>
+                                                                    <div class="friend-info ml-3">
+                                                                        <h5>{{friend.name}} {{friend.surname}}</h5>
+                                                                        <p class="mb-0">{{friend.friends|length}}
+                                                                            friends</p>
                                                                     </div>
-                                                                    <div class="iq-card-header-toolbar d-flex align-items-center">
-                                                                        <div class="dropdown">
+                                                                </div>
+                                                                <div class="iq-card-header-toolbar d-flex align-items-center">
+                                                                    <div class="dropdown">
                                                                    <span class="dropdown-toggle btn btn-secondary mr-2"
-                                                                         id="dropdownMenuButton01" data-toggle="dropdown"
+                                                                         id="dropdownMenuButton01"
+                                                                         data-toggle="dropdown"
                                                                          aria-expanded="true" role="button">
                                                                    <i class="ri-check-line mr-1 text-white font-size-16"></i> Friend
                                                                    </span>
-                                                                            <div class="dropdown-menu dropdown-menu-right"
-                                                                                 aria-labelledby="dropdownMenuButton01">
-                                                                                <a class="dropdown-item" href="#">Get
-                                                                                    Notification</a>
-                                                                                <a class="dropdown-item" href="#">Close
-                                                                                    Friend</a>
-                                                                                <a class="dropdown-item"
-                                                                                   href="#">Unfollow</a>
-                                                                                <a class="dropdown-item"
-                                                                                   href="#">Unfriend</a>
-                                                                                <a class="dropdown-item" href="#">Block</a>
-                                                                            </div>
+                                                                        <div class="dropdown-menu dropdown-menu-right"
+                                                                             aria-labelledby="dropdownMenuButton01">
+                                                                            <a class="dropdown-item" href="#">Get
+                                                                                Notification</a>
+                                                                            <a class="dropdown-item" href="#">Close
+                                                                                Friend</a>
+                                                                            <a class="dropdown-item"
+                                                                               href="#">Unfollow</a>
+                                                                            <a class="dropdown-item"
+                                                                               href="#">Unfriend</a>
+                                                                            <a class="dropdown-item" href="#">Block</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
                                                     {% endfor %}
                                                 </div>
                                             </div>

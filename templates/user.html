@@ -75,16 +75,38 @@
                                     </ul>
                                 </div>
                                 <script>
-                                    function UserAction() {
-                                            var xhttp = new XMLHttpRequest();
-                                            xhttp.onreadystatechange = function() {
-                                                 if (this.readyState == 4 && this.status == 200) {
-                                                     alert(this.responseText);
-                                                 }
-                                            };
-                                            xhttp.open("POST", "/api/friends/{{current_user.id}}/{{user.id}}", true);
-                                            xhttp.setRequestHeader("Content-type", "application/json");
-                                            xhttp.send();
+                                    function AddFriend() {
+                                            var http = new XMLHttpRequest();
+                                                        var url = '/api/friends/{{current_user.id}}/{{user.id}}';
+                                                        var params = ``;
+                                                        http.open('POST', url, true);
+
+                                                        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                                                        http.onreadystatechange = function () {//Call a function when the state changes.
+                                                            if (http.readyState == 4 && http.status == 200) {
+                                                                alert(http.responseText);
+                                                                location.reload();
+                                                            }
+                                                        }
+                                                        http.send(params);
+                                        }
+
+                                        function DeleteFriend() {
+                                            var http = new XMLHttpRequest();
+                                                        var url = '/api/friends/{{current_user.id}}/{{user.id}}';
+                                                        var params = ``;
+                                                        http.open('DELETE', url, true);
+
+                                                        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                                                        http.onreadystatechange = function () {//Call a function when the state changes.
+                                                            if (http.readyState == 4 && http.status == 200) {
+                                                                alert(http.responseText);
+                                                                location.reload();
+                                                            }
+                                                        }
+                                                        http.send(params);
                                         }
                                 </script>
                                 <div class="social-info">
@@ -99,15 +121,15 @@
                                         </li>
                                         <li class="text-center pl-3">
                                             {% if current_user.id == user.id %}
-                                            <button type="button" class="btn btn-outline-warning rounded-pill mb-3">
+                                            <button type="button" class="btn btn-outline-warning rounded-pill mb-3" onclick="alert('WyW?')">
                                                 Nevermind.
                                             </button>
                                             {% elif user in current_user.friends %}
-                                            <button type="button" class="btn btn-outline-danger rounded-pill mb-3">
+                                            <button type="button" class="btn btn-outline-danger rounded-pill mb-3" onclick="DeleteFriend()">
                                                 Delete from friends
                                             </button>
                                             {% elif user not in current_user.friends %}
-                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="UserAction()">Add
+                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="AddFriend()">Add
                                                 as friend
                                             </button>
                                             {% endif %}

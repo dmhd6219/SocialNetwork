@@ -128,27 +128,23 @@ def logout():
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    create_post = CreatePost()
     db_sess = db_session.create_session()
+    user = db_sess.query(User).get(current_user.id)
 
-    if create_post.validate_on_submit():
-        post_list_resource.post(current_user.id)
+    posts = list(db_sess.query(Post).filter(Post.user_id == user.id))
 
-    posts = list(db_sess.query(Post).filter(Post.user_id == current_user.id))
-
-    return render_template('profile.html', form=create_post, posts=posts, current_user=db_sess.query(User).get(current_user.id))
+    return render_template('profile.html', posts=posts, current_user=user, )
 
 
 @app.route('/id<id>')
 @login_required
 def user(id):
     db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == id).first()
+    user = db_sess.query(User).get(id)
     posts = db_sess.query(Post).filter(Post.user_id == user.id)
 
     curr_user = db_sess.query(User).get(current_user.id)
 
-    curr_user.become_friends(user)
 
     return render_template('user.html', user=user, posts=list(posts), current_user=curr_user)
 
@@ -284,7 +280,8 @@ if __name__ == '__main__':
     app.register_blueprint(weather.blueprint)
 
     api.add_resource(rest_api.PostListResource, '/api/posts/<int:user_id>')
-    api.add_resource(rest_api.PostResource, '/api/posts/<int:post_id>')
+    api.add_resource(rest_api.PostResource, '/api/post/<int:post_id>')
     api.add_resource(rest_api.FriendsResource, '/api/friends/<int:user_id>/<int:friend_id>')
+
 
     app.run(threaded=True, port=8080, debug=True)
