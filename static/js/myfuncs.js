@@ -49,3 +49,20 @@ function CreatePost(user_id) {
     }
     http.send(params);
 }
+
+function DeletePost(post_id) {
+    var http = new XMLHttpRequest();
+    var url = `/api/post/${post_id}`;
+    var params = `text=${document.getElementById('createpost').value}`;
+    http.open('DELETE', url, true);
+
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    http.onreadystatechange = function () {//Call a function when the state changes.
+        if (http.readyState == 4 && http.status == 200) {
+            alert(http.responseText);
+            location.reload();
+        }
+    }
+    http.send(params);
+}

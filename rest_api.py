@@ -42,6 +42,7 @@ class PostResource(Resource):
         session = db_session.create_session()
         post = session.query(Post).get(post_id)
         session.delete(post)
+        session.commit()
         return jsonify({'success': 'OK'})
 
 
