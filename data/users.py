@@ -21,6 +21,7 @@ class User(SqlAlchemyBase, UserMixin):
                            primary_key=True, autoincrement=True)
 
     closed = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    status = sqlalchemy.Column(sqlalchemy.String, default='')
 
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)

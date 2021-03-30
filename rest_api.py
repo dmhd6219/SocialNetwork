@@ -103,3 +103,4 @@ class FriendsResource(Resource):
             user.delete_friend(friend)
             session.commit()
             return jsonify({'success': 'OK'})
+

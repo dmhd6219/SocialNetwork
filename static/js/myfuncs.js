@@ -66,3 +66,15 @@ function DeletePost(post_id) {
     }
     http.send(params);
 }
+
+function StartPlayback(token, uri) {
+    fetch(`https://api.spotify.com/v1/me/player/play`, {
+            method: 'PUT',
+            body: JSON.stringify({uris: [uri]}),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    )
+}

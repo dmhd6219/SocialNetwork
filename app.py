@@ -193,7 +193,8 @@ def friends(spotify: spotipy.Spotify):
 def profile_edit(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
 
-    params = {'current_user': db_sess.query(User).get(current_user.id), 'spotify': spotify, 'messages': {}}
+    params = {'current_user': db_sess.query(User).get(current_user.id), 'spotify': spotify,
+              'messages': {}}
 
     user = db_sess.query(User).filter(User.id == current_user.id).first()
 
@@ -321,6 +322,22 @@ def page_not_found(e):
 @app.errorhandler(401)
 def unauthorized(e):
     return redirect('/login')
+
+
+@app.route('/test')
+@login_required
+@spotify_login_required
+def test(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+    }
+
+    print(spotify.auth_manager.get_access_token())
+
+    return render_template('test_page.html', **params)
 
 
 if __name__ == '__main__':

@@ -27,12 +27,14 @@ user.image
                                  -->
                             </div>
                             <div class="user-detail text-center mb-3">
-                                <a href="/profile/settings#update_avatar">
-                                    <div class="profile-img">
+
+                                <div class="profile-img">
+                                    <a href="/profile/settings#update_avatar">
                                         <img src="{{current_user.avatar}}" alt="profile-img"
                                              class="avatar-130 img-fluid"/>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
+
                                 <div class="profile-detail">
                                     <h3 class="">{{current_user.name}} {{current_user.surname}}</h3>
                                 </div>
@@ -217,7 +219,8 @@ user.image
 
                                                                 <!-- DROPDOWN -->
                                                                 <div class="dropdown-menu m-0 p-0">
-                                                                    <a class="dropdown-item p-3" onclick="DeletePost({{post.id}})">
+                                                                    <a class="dropdown-item p-3"
+                                                                       onclick="DeletePost({{post.id}})">
                                                                         <div class="d-flex align-items-top">
                                                                             <div class="icon font-size-20"><i
                                                                                     class="ri-delete-bin-7-line"></i>

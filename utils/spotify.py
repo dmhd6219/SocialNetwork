@@ -16,7 +16,7 @@ SCOPE = 'user-top-read user-read-playback-position user-read-private user-read-e
         'playlist-read-private user-library-read user-library-modify playlist-read-collaborative ' \
         'playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read ' \
         'user-follow-modify user-read-playback-state user-modify-playback-state ' \
-        'user-read-currently-playing user-read-recently-played'
+        'user-read-currently-playing user-read-recently-played streaming'
 
 
 def session_cache_path():
@@ -54,11 +54,6 @@ def spotify_login_required(func):
 
         if not user.spotify_id:
             user.spotify_id = spotify.current_user()['id']
-            db_sess.commit()
-
-        token = spotify.auth_manager.get_access_token()['access_token']
-        if token != user.spotify_token:
-            user.spotify_token = token
             db_sess.commit()
 
         return func(**kwargs, spotify=spotify)

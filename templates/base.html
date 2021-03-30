@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -40,7 +40,7 @@
                     </li>
                     <li>
                         <a href="/friends" class="iq-waves-effect"><i
-                                class="las la-user-friends"></i><span>Friend Lists</span></a>
+                                class="las la-user-friends"></i><span>Friend List</span></a>
                     </li>
 
                     <li>
@@ -79,14 +79,22 @@
                         </div>
                     </div>
                 </div>
-                <!--
+
+                <script>
+                    function MusicSearchChange() {
+                        let musicsearch = document.getElementById('musicsearch');
+                        let searchmusicbutton = document.getElementById('searchmusicbutton');
+                        musicsearch.addEventListener('input', () => {searchmusicbutton.href = `/music/search/${musicsearch.value.replace('/', '').replace(' ', '')}`});
+                    }
+                </script>
+
                <div class="iq-search-bar">
-                  <form action="/search" class="searchbox">
-                     <input type="text" class="text search-input" placeholder="Type here to search...">
-                     <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                  </form>
+                  <div class="searchbox">
+                     <input type="text" class="text search-input" placeholder="Type here to search for some music..." id="musicsearch" oninput="MusicSearchChange()">
+                     <a class="search-link" href="/music/search/" id="searchmusicbutton"><i class="ri-search-line"></i></a>
+                  </div>
                </div>
-               -->
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-label="Toggle navigation">
@@ -209,7 +217,7 @@
                             <img class="rounded-circle avatar-50" src="{{friend.avatar}}" alt="">
                             <div class="media-body ml-3">
                                 <h6 class="mb-0"><a href="#">{{friend.name}} {{friend.surname}}</a></h6>
-                                <p class="mb-0">who is it</p>
+                                <p class="mb-0">{{friend.status}}</p>
                             </div>
                         </div>
                         {% endfor %}

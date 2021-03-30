@@ -277,3 +277,9 @@ def currently_playing(spotify: spotipy.Spotify):
 @spotify_login_required
 def get_current_user(spotify: spotipy.Spotify):
     return spotify.current_user()
+
+
+@blueprint.route('/music/play/<uri>', methods=['POST'])
+@spotify_login_required
+def play(uri, spotify: spotipy.Spotify):
+    spotify.start_playback(context_uri=uri)
