@@ -78,3 +78,19 @@ function StartPlayback(token, uri) {
         }
     )
 }
+
+
+function MouseOverTrack(index) {
+    let track = document.getElementById(`track-line${index}`);
+    let track_index = document.getElementById(`track-index${index}`);
+    track_index.innerHTML = `<i class='ri-play-circle-line' style='pointer-events: none>`
+    track.style.color = 'rgb(80,181,255)'
+
+}
+
+function MouseOutTrack(index) {
+    let track = document.getElementById(`track-line${index}`);
+    let track_index = document.getElementById(`track-index${index}`);
+    track_index.innerHTML = index
+    track.style.color = ''
+}

@@ -31,12 +31,14 @@
                     <tbody>
                     {% for track in playlist['tracks']['items'] %}
                     <tr>
-                        <td onclick="StartPlayback(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{track['uri']}}`)" onmouseover="this.innerHTML=`<i class='ri-play-circle-line' style='pointer-events: none;'>`;" onmouseout="this.innerHTML='{{loop.index}}'">{{loop.index}}</td>
-                        <td>{{track['track']['name']}}</td>
-                        <td><a href="/music/artist/{{track['track']['artists'][0]['id']}}">{{track['track']['artists'][0]['name']}}</a></td>
-                        <td>{{ ((track['track']['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}
-                            min.
-                        </td>
+                        <tr id="track-line{{loop.index}}" onmouseover="MouseOverTrack('{{loop.index}}')" onmouseout="MouseOutTrack('{{loop.index}}')">
+                            <td id="track-index{{loop.index}}" onclick="StartPlayback(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{track['uri']}}`)">{{loop.index}}</td>
+                            <td>{{track['name']}}</td>
+                            <td><a href="/music/artist/{{track['artists'][0]['id']}}">{{track['artists'][0]['name']}}</a></td>
+                            <td>{{ ((track['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}
+                                min.
+                            </td>
+                        </tr>
                     </tr>
                     {% endfor %}
                     </tbody>

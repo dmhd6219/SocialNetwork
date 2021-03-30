@@ -335,8 +335,6 @@ def test(spotify: spotipy.Spotify):
         'spotify': spotify,
     }
 
-    print(spotify.auth_manager.get_access_token())
-
     return render_template('test_page.html', **params)
 
 

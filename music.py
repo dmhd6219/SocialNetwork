@@ -150,8 +150,6 @@ def playlist(id, spotify: spotipy.Spotify):
     except Exception:
         return abort(404)
 
-    pprint(params['playlist']['tracks']['items'])
-
     return render_template('playlist.html', **params)
 
 
@@ -176,8 +174,6 @@ def track(id, spotify: spotipy.Spotify):
         params['duration'] = round(dur, 2)
     except:
         return abort(404)
-
-    pprint(params['music'])
 
     return render_template('track.html', **params)
 
