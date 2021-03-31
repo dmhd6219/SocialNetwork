@@ -140,8 +140,7 @@ def logout():
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
-@spotify_login_required
-def profile(spotify: spotipy.Spotify):
+def profile():
     db_sess = db_session.create_session()
     user = db_sess.query(User).get(current_user.id)
 
@@ -149,7 +148,6 @@ def profile(spotify: spotipy.Spotify):
 
     params = {
         'current_user': user,
-        'spotify': spotify,
     }
 
     return render_template('profile.html', posts=posts, **params)
@@ -157,8 +155,7 @@ def profile(spotify: spotipy.Spotify):
 
 @app.route('/id<id>')
 @login_required
-@spotify_login_required
-def user(id, spotify: spotipy.Spotify):
+def user(id,):
     db_sess = db_session.create_session()
     user = db_sess.query(User).get(id)
     posts = db_sess.query(Post).filter(Post.user_id == user.id)
@@ -167,7 +164,6 @@ def user(id, spotify: spotipy.Spotify):
 
     params = {
         'current_user': curr_user,
-        'spotify': spotify,
     }
 
     return render_template('user.html', user=user, posts=list(posts), **params)
@@ -175,13 +171,11 @@ def user(id, spotify: spotipy.Spotify):
 
 @app.route('/friends')
 @login_required
-@spotify_login_required
-def friends(spotify: spotipy.Spotify):
+def friends():
     db_sess = db_session.create_session()
 
     params = {
         'current_user': db_sess.query(User).get(current_user.id),
-        'spotify': spotify,
     }
 
     return render_template('friends.html', **params)
@@ -189,11 +183,10 @@ def friends(spotify: spotipy.Spotify):
 
 @app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
-@spotify_login_required
-def profile_edit(spotify: spotipy.Spotify):
+def profile_edit():
     db_sess = db_session.create_session()
 
-    params = {'current_user': db_sess.query(User).get(current_user.id), 'spotify': spotify,
+    params = {'current_user': db_sess.query(User).get(current_user.id),
               'messages': {}}
 
     user = db_sess.query(User).filter(User.id == current_user.id).first()
@@ -287,14 +280,12 @@ def profile_edit(spotify: spotipy.Spotify):
 
 
 @app.route('/profile/privacy')
-@spotify_login_required
 @login_required
-def privacy_settings(spotify: spotipy.Spotify):
+def privacy_settings():
     db_sess = db_session.create_session()
 
     params = {
         'current_user': db_sess.query(User).get(current_user.id),
-        'spotify': spotify,
     }
 
     return render_template('comingsoon.html', **params)
@@ -302,13 +293,11 @@ def privacy_settings(spotify: spotipy.Spotify):
 
 @app.route('/messages')
 @login_required
-@spotify_login_required
-def messages(spotify: spotipy.Spotify):
+def messages():
     db_sess = db_session.create_session()
 
     params = {
-        'current_user': db_sess.query(User).get(current_user.id),
-        'spotify': spotify,
+        'current_user': db_sess.query(User).get(current_user.id)
     }
 
     return render_template('chat.html', **params)
@@ -326,13 +315,11 @@ def unauthorized(e):
 
 @app.route('/test')
 @login_required
-@spotify_login_required
-def test(spotify: spotipy.Spotify):
+def test():
     db_sess = db_session.create_session()
 
     params = {
         'current_user': db_sess.query(User).get(current_user.id),
-        'spotify': spotify,
     }
 
     return render_template('test_page.html', **params)
