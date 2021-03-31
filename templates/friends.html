@@ -34,7 +34,11 @@
                                                 </div>
                                                 <div class="user-data-block">
                                                     <a href="/id{{friend.id}}"><h4 class="">{{friend.name}} {{friend.surname}}</h4></a>
+                                                    {% if friend.status|length > 270 %}
+                                                    <p>{{friend.status[:267]}}...</p>
+                                                    {% else %}
                                                     <p>{{friend.status}}</p>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                             {% if friend in current_user.friends %}

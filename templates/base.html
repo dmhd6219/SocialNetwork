@@ -214,10 +214,14 @@
                     <div class="media-height p-3">
                         {% for friend in current_user.friends %}
                         <div class="media align-items-center mb-4">
-                            <img class="rounded-circle avatar-50" src="{{friend.avatar}}" alt="">
+                            <a href="/id{{friend.id}}"><img class="rounded-circle avatar-50" src="{{friend.avatar}}" alt=""></a>
                             <div class="media-body ml-3">
-                                <h6 class="mb-0"><a href="#">{{friend.name}} {{friend.surname}}</a></h6>
+                                <h6 class="mb-0"><a href="/id{{friend.id}}">{{friend.name}} {{friend.surname}}</a></h6>
+                                {% if friend.status|length > 48 %}
+                                <p class="mb-0">{{friend.status[:45]}}...</p>
+                                {% else %}
                                 <p class="mb-0">{{friend.status}}</p>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
