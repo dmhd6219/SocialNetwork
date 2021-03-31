@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div style="width: 100%">
-                <table class="table table-responsive-xxl">
+                <table class="table table-responsive-xxl" style="text-align: center">
                     <thead class="table-light">
 
                     <tr>
@@ -42,7 +42,14 @@
                                 {{loop.index}}
                         </td>
                             <td>{{track['name']}}</td>
-                            <td><a href="/music/artist/{{track['artists'][0]['id']}}">{{track['artists'][0]['name']}}</a>
+                            <td>
+                                {% for artist in track['artists'] %}
+                                <a href="/music/artist/{{artist['id']}}">{{artist['name']}}</a>
+                                {% if not loop.last %}
+                                ,
+                                {% endif %}
+                                {% endfor %}
+                            </td>
                             </td>
                             <td>{{ ((track['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}
                                 min.

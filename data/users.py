@@ -100,10 +100,3 @@ class User(SqlAlchemyBase, UserMixin):
         if friend in self.friends:
             self.friends.remove(friend)
             friend.friends.remove(self)
-
-    def create_post(self, text, db_sess):
-        post = Post()
-        post.text = text
-        post.user_id = self.id
-        post.user = db_sess.query(User).filter(User.id == self.id).first()
-        return post

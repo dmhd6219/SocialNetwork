@@ -60,6 +60,8 @@ def artist(id, spotify: spotipy.Spotify):
         'spotify': spotify,
     }
 
+    # 4K7kAAsdwnIHjgRk28OyOi
+
     try:
         params['artist'] = spotify.artist(id)
         params['top_tracks'] = spotify.artist_top_tracks(id)['tracks'][:6:]
@@ -188,7 +190,7 @@ def album(id, spotify: spotipy.Spotify):
         'spotify': spotify,
     }
 
-    # id = 1zpglRcWM6VnMkpsFkHIdt
+    # id = 6WLBApYwMaajoFlzITzb6P
 
     try:
         params['playlist'] = spotify.album(id)
@@ -196,6 +198,12 @@ def album(id, spotify: spotipy.Spotify):
         for track in params['playlist']['tracks']['items']:
             dur += float(track['duration_ms']) / 1000 / 60
         params['duration'] = round(dur, 2)
+        params['artists'] = [[(artist['name'], artist['id']) for artist in track['artists']] for track in params['playlist']['tracks']['items']]
+        #
+        #
+        # сделать отображение всех артистов
+        # использовать loop.first или loop.end
+        #
     except:
         return abort(404)
 
@@ -228,16 +236,15 @@ def top_tracks(spotify: spotipy.Spotify):
     return render_template('top_tracks.html', **params)
 
 
-
 @blueprint.route('/music/artist/top')
 @login_required
 @spotify_login_required
 def top_artists(spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
     params = {'artists': spotify.current_user_top_artists(time_range='short_term'),
-        'current_user': db_sess.query(User).get(current_user.id),
-        'spotify': spotify,
-    }
+              'current_user': db_sess.query(User).get(current_user.id),
+              'spotify': spotify,
+              }
 
     return render_template('top_artists.html', **params)
 

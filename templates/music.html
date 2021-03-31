@@ -45,7 +45,7 @@
             <div class="col-md-8">
                 <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                     <div class="iq-card-body p-0  ">
-                        <a href="#"><img src="static/images/page-img/48.jpg" alt="story-img" class="img-fluid rounded"></a>
+                        <img src="static/images/page-img/48.jpg" alt="story-img" class="img-fluid rounded">
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="iq-card-body">
                         <ul id="new-music" class="d-flex list-inline m-0 p-0 FUCK">
-                            {% for song in spotify.new_releases("RU", limit=7)["albums"]['items'] %}
+                            {% for song in spotify.new_releases("RU", limit=10)["albums"]['items'] %}
                             <li class="text-center col-sm-2">
                                 <div class="music-thumbnail position-relative mb-3">
                                     <a href="/music/album/{{song['id']}}"><img src="{{ song['images'][0]['url'] }}"
@@ -120,7 +120,7 @@
                 </div>
                 <div class="iq-card-body">
                     <ul id="top-music" class="d-flex list-inline m-0 p-0 FUCK">
-                        {% for song in spotify.current_user_top_tracks(limit=7, time_range='short_term')['items'] %}
+                        {% for song in spotify.current_user_top_tracks(limit=10, time_range='short_term')['items'] %}
                         <li class="text-center col-sm-2">
                             <div class="music-thumbnail position-relative mb-3">
                                 <a href="/music/track/{{song['id']}}"><img src="{{ song['album']['images'][0]['url'] }}"
@@ -152,7 +152,7 @@
                 </div>
                 <div class="iq-card-body">
                     <ul id="top-artist" class="d-flex list-inline m-0 p-0 FUCK">
-                        {% for artist in spotify.current_user_top_artists(limit=7, time_range='short_term')['items']%}
+                        {% for artist in spotify.current_user_top_artists(limit=10, time_range='short_term')['items']%}
                         <li class="text-center col-sm-2">
                             <div class="music-thumbnail position-relative mb-3">
                                 <a href="/music/artist/{{artist['id']}}"><img src="{{ artist['images'][0]['url'] }}"
@@ -178,39 +178,6 @@
 </div>
 </div>
 <!-- Wrapper END -->
-
-<script src="https://sdk.scdn.co/spotify-player.js">
-    window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = '{{spotify.auth_manager.get_access_token()["access_token"]}}';
-  const player = new Spotify.Player({
-    name: 'Web Playback SDK Quick Start Player',
-    getOAuthToken: cb => { cb(token); }
-  });
-
-  // Error handling
-  player.addListener('initialization_error', ({ message }) => { console.error(message); });
-  player.addListener('authentication_error', ({ message }) => { console.error(message); });
-  player.addListener('account_error', ({ message }) => { console.error(message); });
-  player.addListener('playback_error', ({ message }) => { console.error(message); });
-
-  // Playback status updates
-  player.addListener('player_state_changed', state => { console.log(state); });
-
-  // Ready
-  player.addListener('ready', ({ device_id }) => {
-    console.log('Ready with Device ID', device_id);
-  });
-
-  // Not Ready
-  player.addListener('not_ready', ({ device_id }) => {
-    console.log('Device ID has gone offline', device_id);
-  });
-
-  // Connect to the player!
-  player.connect();
-};
-
-</script>
 
 
 {% endblock %}

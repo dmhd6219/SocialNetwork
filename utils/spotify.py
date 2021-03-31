@@ -52,7 +52,7 @@ def spotify_login_required(func):
         # Step 4. Signed in, display data
         spotify = spotipy.Spotify(auth_manager=auth_manager)
 
-        if not user.spotify_id:
+        if not user.spotify_id or user.spotify_id != spotify.current_user()['id']:
             user.spotify_id = spotify.current_user()['id']
             db_sess.commit()
 

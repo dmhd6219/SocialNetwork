@@ -82,19 +82,19 @@
                                         </li>
                                         <li class="text-center pl-3">
                                             <h6>Friends</h6>
-                                            <p class="mb-0">{{user.friends|length}}</p>
+                                            <p class="mb-0" id="friends-count">{{user.friends|length}}</p>
                                         </li>
                                         <li class="text-center pl-3">
                                             {% if current_user.id == user.id %}
-                                            <button type="button" class="btn btn-outline-warning rounded-pill mb-3" onclick="alert('WyW?')">
+                                            <button id="friends-button" type="button" class="btn btn-outline-warning rounded-pill mb-3" onclick="alert('WyW?')">
                                                 Nevermind.
                                             </button>
                                             {% elif user in current_user.friends %}
-                                            <button type="button" class="btn btn-outline-danger rounded-pill mb-3" onclick="DeleteFriend({{current_user.id}}, {{user.id}})">
-                                                Delete from friends
+                                            <button id="friends-button" type="button" class="btn btn-outline-danger rounded-pill mb-3" onclick="DeleteFriend({{current_user.id}}, {{user.id}})">
+                                                Delete friend
                                             </button>
                                             {% elif user not in current_user.friends %}
-                                            <button type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="AddFriend({{current_user.id}}, {{user.id}})">
+                                            <button id="friends-button" type="button" class="btn btn-outline-primary rounded-pill mb-3" onclick="AddFriend({{current_user.id}}, {{user.id}})">
                                                 Add as friend
                                             </button>
                                             {% endif %}

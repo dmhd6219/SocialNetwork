@@ -29,11 +29,11 @@
                                         <div class="d-flex flex-wrap justify-content-between align-items-start">
                                             <div class="profile-detail d-flex">
                                                 <div class="profile-img pr-4">
-                                                    <img src="{{friend.avatar}}" alt="profile-img"
-                                                         class="avatar-130 img-fluid"/>
+                                                    <a href="/id{{friend.id}}"><img src="{{friend.avatar}}" alt="profile-img"
+                                                         class="avatar-130 img-fluid"/></a>
                                                 </div>
                                                 <div class="user-data-block">
-                                                    <h4 class="">{{friend.name}} {{friend.surname}}</h4>
+                                                    <a href="/id{{friend.id}}"><h4 class="">{{friend.name}} {{friend.surname}}</h4></a>
                                                     <p>{{friend.status}}</p>
                                                 </div>
                                             </div>

@@ -70,7 +70,7 @@ class PostListResource(Resource):
         )
         session.add(post)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': 'OK', 'post': {'id': post.id, 'author':f'{post.user.name} {post.user.surname}'}})
 
 
 class FriendsResource(Resource):
@@ -103,4 +103,3 @@ class FriendsResource(Resource):
             user.delete_friend(friend)
             session.commit()
             return jsonify({'success': 'OK'})
-

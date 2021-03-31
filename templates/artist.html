@@ -15,6 +15,11 @@
                 <div class="media-body ml-3">
                     <h6 class="mb-0">{{artist['name']}}</h6>
                     <p class="mb-0">{{artist['followers']['total']}} followers</p>
+                    {% if not spotify.current_user_following_artists([artist["id"]])[0] %}
+                    <button id="follow-button" type="button" class="btn btn-outline-primary mb-3" onclick="FollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)">Follow</button>
+                    {% else %}
+                    <button id="follow-button" type="button" class="btn btn-outline-primary mb-3" onclick="UnfollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)">Unfollow</button>
+                    {% endif %}
                 </div>
             </div>
 
