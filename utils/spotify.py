@@ -60,3 +60,37 @@ def spotify_login_required(func):
 
     wrapper.__name__ = func.__name__
     return wrapper
+
+
+def get_followed_artists(spotify: spotipy.Spotify):
+    artists = spotify.current_user_followed_artists(limit=50)['artists']['items']
+    all_artists = artists
+    while artists:
+        artists = \
+            spotify.current_user_followed_artists(limit=50, after=all_artists[-1]['id'])['artists'][
+                'items']
+        all_artists += artists
+
+    return all_artists
+
+
+def get_all_artist_tracks(artist_id: str, spotify: spotipy.Spotify):
+    loop = 0
+    albums = spotify.artist_albums(artist_id, limit=50, album_type='album')['items']
+    all_albums = albums
+
+    while albums:
+        loop += 1
+        albums = spotify.artist_albums(artist_id, limit=50, offset=50, album_type='album')['items']
+        all_albums += albums
+
+    loop = 0
+    singles = spotify.artist_albums(artist_id, limit=50, album_type='single')['items']
+    all_singles = singles
+
+    while singles:
+        loop += 1
+        singles = spotify.artist_albums(artist_id, limit=50, offset=50, album_type='single')['items']
+        all_singles += albums
+
+    return {'albums': all_albums, 'singles': all_singles}

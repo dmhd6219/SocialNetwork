@@ -28,7 +28,13 @@
                             {% for playlist in spotify.current_user_playlists(limit=5)['items'] %}
                             <a href="/music/playlist/{{playlist['id']}}">
                                 <li class="d-flex mb-4 align-items-center">
-                                    <div class="user-img img-fluid"><img src="{{playlist['images'][0]['url']}}"
+                                    {% set cover = playlist['images'] %}
+                                    {% if cover %}
+                                    {% set cover = cover[0]['url'] %}
+                                    {% else %}
+                                    {% set cover = '/static/images/white.jpg' %}
+                                    {% endif %}
+                                    <div class="user-img img-fluid"><img src="{{cover}}"
                                                                          alt="story-img"
                                                                          class="rounded-circle avatar-40"></div>
                                     <div class="media-support-info ml-3">
@@ -63,8 +69,14 @@
                         <ul id="new-music" class="d-flex list-inline m-0 p-0 FUCK">
                             {% for song in spotify.new_releases("RU", limit=10)["albums"]['items'] %}
                             <li class="text-center col-sm-2">
+                                {% set cover = song['images'] %}
+                                {% if cover %}
+                                {% set cover = cover[0]['url'] %}
+                                {% else %}
+                                {% set cover = '/static/images/white.jpg' %}
+                                {% endif %}
                                 <div class="music-thumbnail position-relative mb-3">
-                                    <a href="/music/album/{{song['id']}}"><img src="{{ song['images'][0]['url'] }}"
+                                    <a href="/music/album/{{song['id']}}"><img src="{{ cover }}"
                                                                                alt="music-thumb"
                                                                                class="img-fluid w-100"
                                                                                style="max-height: 140px; max-width: 140px;"></a>
@@ -122,8 +134,14 @@
                     <ul id="top-music" class="d-flex list-inline m-0 p-0 FUCK">
                         {% for song in spotify.current_user_top_tracks(limit=10, time_range='short_term')['items'] %}
                         <li class="text-center col-sm-2">
+                            {% set cover = song['album']['images'] %}
+                                {% if cover %}
+                                {% set cover = cover[0]['url'] %}
+                                {% else %}
+                                {% set cover = '/static/images/white.jpg' %}
+                                {% endif %}
                             <div class="music-thumbnail position-relative mb-3">
-                                <a href="/music/track/{{song['id']}}"><img src="{{ song['album']['images'][0]['url'] }}"
+                                <a href="/music/track/{{song['id']}}"><img src="{{ cover }}"
                                                                            alt="music-thumb"
                                                                            class="img-fluid w-100"
                                                                            style="max-height: 140px; max-width: 140px;"></a>
@@ -154,8 +172,14 @@
                     <ul id="top-artist" class="d-flex list-inline m-0 p-0 FUCK">
                         {% for artist in spotify.current_user_top_artists(limit=10, time_range='short_term')['items']%}
                         <li class="text-center col-sm-2">
+                            {% set cover = artist['images'] %}
+                                {% if cover %}
+                                {% set cover = cover[0]['url'] %}
+                                {% else %}
+                                {% set cover = '/static/images/white.jpg' %}
+                                {% endif %}
                             <div class="music-thumbnail position-relative mb-3">
-                                <a href="/music/artist/{{artist['id']}}"><img src="{{ artist['images'][0]['url'] }}"
+                                <a href="/music/artist/{{artist['id']}}"><img src="{{ cover }}"
                                                                               alt="music-thumb"
                                                                               class="img-fluid w-100"
                                                                               style="max-height: 140px; max-width: 140px;"></a>

@@ -1,3 +1,4 @@
+import datetime
 import os
 from pprint import pprint
 
@@ -29,7 +30,7 @@ from forms.user import RegisterUser, LoginUser
 
 from PIL import Image
 
-from utils.spotify import spotify_login_required, SCOPE
+from utils.spotify import spotify_login_required, SCOPE, get_followed_artists, get_all_artist_tracks
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -76,9 +77,34 @@ def load_user(user_id):
 
 @app.route('/')
 @app.route('/index')
+@app.route('/news')
 @login_required
-def index():
-    return redirect('/profile')
+@spotify_login_required
+def index(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
+
+    # return redirect('/profile')
+
+    params = {
+        'spotify': spotify,
+        'current_user': db_sess.query(User).get(current_user.id),
+        'new_releases': []
+    }
+
+    artists = sorted(get_followed_artists(spotify), key=lambda x: x['popularity'], reverse=True)
+    for artist in artists:
+        tracks = get_all_artist_tracks(artist['id'], spotify)
+        albums = list(filter(
+            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y/%m/%d'),
+            tracks['albums']))
+        singles = list(filter(
+            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y/%m/%d'),
+            tracks['singles']))
+
+        params['new_releases'] += albums
+        params['new_releases'] += singles
+
+    return render_template('newsfeed.html', **params)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -155,7 +181,7 @@ def profile():
 
 @app.route('/id<id>')
 @login_required
-def user(id,):
+def user(id, ):
     db_sess = db_session.create_session()
     user = db_sess.query(User).get(id)
     posts = db_sess.query(Post).filter(Post.user_id == user.id)

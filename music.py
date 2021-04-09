@@ -71,6 +71,8 @@ def artist(id, spotify: spotipy.Spotify):
     except:
         return abort(404)
 
+    pprint(params['artist'])
+
     return render_template('artist.html', **params)
 
 
