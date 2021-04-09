@@ -30,6 +30,8 @@ from forms.user import RegisterUser, LoginUser
 
 from PIL import Image
 
+from flask_jwt_simple import JWTManager
+
 from utils.spotify import spotify_login_required, SCOPE, get_followed_artists, get_all_artist_tracks
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -40,7 +42,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 app.config['SECRET_KEY'] = 'spotify_project_secret_key'
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/uploaded_photos')
-
 Session(app)
 
 login_manager = LoginManager()
@@ -94,12 +95,19 @@ def index(spotify: spotipy.Spotify):
     artists = sorted(get_followed_artists(spotify), key=lambda x: x['popularity'], reverse=True)
     for artist in artists:
         tracks = get_all_artist_tracks(artist['id'], spotify)
+
+
         albums = list(filter(
-            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y/%m/%d'),
+            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y-%m-%d'),
             tracks['albums']))
         singles = list(filter(
-            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y/%m/%d'),
+            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y-%m-%d'),
             tracks['singles']))
+
+        for i in albums:
+            i['artist_image'] = artist['images'][0]['url']
+        for i in singles:
+            i['artist_image'] = artist['images'][0]['url']
 
         params['new_releases'] += albums
         params['new_releases'] += singles
