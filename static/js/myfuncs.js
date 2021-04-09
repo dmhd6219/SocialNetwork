@@ -71,7 +71,8 @@ function DeletePost(post_id) {
 }
 
 function StartPlayback(token, uri) {
-    fetch(`https://api.spotify.com/v1/me/player/play`, {
+    console.log(uri);
+    console.log(fetch(`https://api.spotify.com/v1/me/player/play`, {
             method: 'PUT',
             body: JSON.stringify({uris: [uri]}),
             headers: {
@@ -79,9 +80,10 @@ function StartPlayback(token, uri) {
                 'Authorization': `Bearer ${token}`
             }
         }
-    )
+    ))
 }
 
+// spotify:track:3cX83eH9gdhie38XczJBqh //
 
 function MouseOverTrack(index) {
     let track = document.getElementById(`track-line${index}`);
@@ -112,9 +114,10 @@ function FollowArtist(token, id) {
     )
 
     let follow_button = document.getElementById('follow-button')
-    follow_button.innerHTML = 'Unfollow'
-    follow_button.onclick = "UnfollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)"
-
+    if (follow_button != null) {
+        follow_button.innerHTML = 'Unfollow'
+        follow_button.onclick = "UnfollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)"
+    }
 }
 
 function UnfollowArtist(token, id) {
@@ -129,6 +132,9 @@ function UnfollowArtist(token, id) {
     )
 
     let follow_button = document.getElementById('follow-button')
-    follow_button.innerHTML = 'Follow'
-    follow_button.onclick = "FollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)"
+    if (follow_button != null) {
+        follow_button.innerHTML = 'Follow'
+        follow_button.onclick = "FollowArtist(`{{spotify.auth_manager.get_access_token()['access_token']}}`, `{{artist['id']}}`)"
+    }
+
 }

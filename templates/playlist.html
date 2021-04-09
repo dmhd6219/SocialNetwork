@@ -37,9 +37,7 @@
                             <td>
                                 {% for artist in track['artists'] %}
                                 <a href="/music/artist/{{artist['id']}}">{{artist['name']}}</a>
-                                {% if not loop.last %}
-                                ,
-                                {% endif %}
+                                {% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
                             <td>{{ ((track['duration_ms']|int / 1000 / 60)|round(2))|string|replace(".", ":") }}

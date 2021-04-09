@@ -93,6 +93,8 @@ def index(spotify: spotipy.Spotify):
     }
 
     artists = sorted(get_followed_artists(spotify), key=lambda x: x['popularity'], reverse=True)
+
+    params['followed_artists'] = artists[:4]
     for artist in artists:
         tracks = get_all_artist_tracks(artist['id'], spotify)
 
@@ -111,6 +113,7 @@ def index(spotify: spotipy.Spotify):
 
         params['new_releases'] += albums
         params['new_releases'] += singles
+
 
     return render_template('newsfeed.html', **params)
 

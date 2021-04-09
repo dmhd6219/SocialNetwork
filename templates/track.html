@@ -45,9 +45,7 @@
                             <td>
                                 {% for artist in track['artists'] %}
                                 <a href="/music/artist/{{artist['id']}}">{{artist['name']}}</a>
-                                {% if not loop.last %}
-                                ,
-                                {% endif %}
+                                {% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
                             </td>
