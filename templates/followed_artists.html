@@ -6,7 +6,7 @@
         <img src="/static/images/page-img/profile-bg3.jpg" class="img-fluid w-100" alt="profile-bg">
         <div class="title-on-header">
             <div class="data-block">
-                <h2>{{artist['name']}} Appears On</h2>
+                <h2>Your Followed Artists</h2>
             </div>
         </div>
     </div>
@@ -16,21 +16,18 @@
     <div class="container">
         <div class="row">
 
-            {% for album in appears_on %}
+            {% for artist in artists %}
             <div class="col-md-6 col-lg-6">
                 <div class="iq-card">
                     <div class="iq-card-body">
                         <div class="iq-birthday-block">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <a href="/music/album/{{album['id']}}">
-                                        {% set image = '/static/images/white.jpg' %}
-                                        {% if album['images'] %}{% set image = album['images'][0]['url'] %}{%endif%}
-                                        <img src="{{ image }}" alt="profile-img" class="img-fluid" style="max-width: 300px; max-height: 300px;">
+                                    <a href="/music/artist/{{artist['id']}}">
+                                        <img src="{{ artist['images'][0]['url'] }}" alt="profile-img" class="img-fluid" style="max-width: 300px; max-height: 300px;">
                                     </a>
                                     <div class="friend-info ml-3">
-                                        <a href="/music/album/{{album['id']}}"><h5>{{album['name']}}</h5></a>
-                                        <a href="/music/artist/{{album['artists'][0]['id']}}"><p class="mb-0">{{album['artists'][0]['name']}}</p></a>
+                                        <a href="/music/artist/{{artist['id']}}"><h5>{{artist['name']}}</h5></a>
                                     </div>
                                 </div>
                             </div>

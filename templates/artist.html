@@ -42,7 +42,9 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="/music/track/{{song['id']}}"><img src="{{song['album']['images'][0]['url']}}"
+                                                {%set image = '/static/images/white.jpg' %}
+                                                {% if song['album']['images'] %}{% set image = song['album']['images'][0]['url']%}{%endif%}
+                                                <a href="/music/track/{{song['id']}}"><img src="{{image}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
@@ -83,7 +85,9 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="/music/album/{{album['id']}}"><img src="{{album['images'][0]['url']}}"
+                                                {% set image = '/static/images/white.jpg' %}
+                                                {% if album['images'] %}{% set image = album['images'][0]['url'] %}{%endif%}
+                                                <a href="/music/album/{{album['id']}}"><img src="{{image}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
@@ -125,7 +129,9 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="/music/album/{{single['id']}}"><img src="{{single['images'][0]['url']}}"
+                                                {% set image = '/static/images/white.jpg' %}
+                                                {% if single['images'] %}{% set image = single['images'][0]['url'] %}{%endif%}
+                                                <a href="/music/album/{{single['id']}}"><img src="{{image}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>
@@ -167,7 +173,9 @@
 
                                         <li class="text-center col-sm-2">
                                             <div class="music-thumbnail position-relative mb-3">
-                                                <a href="/music/album/{{track['id']}}"><img src="{{track['images'][0]['url']}}"
+                                                {% set image = '/static/images/white.jpg' %}
+                                                {% if track['images'] %}{% set image = track['images'][0]['url'] %}{%endif%}
+                                                <a href="/music/album/{{track['id']}}"><img src="{{image}}"
                                                                  alt="music-thumb"
                                                                  class="img-fluid w-100">
                                                 </a>

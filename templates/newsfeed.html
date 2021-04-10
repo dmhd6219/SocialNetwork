@@ -14,7 +14,9 @@
                               <div class="user-post-data">
                                  <div class="d-flex flex-wrap">
                                     <div class="media-support-user-img mr-3">
-                                       <a href="/music/artist/{{release['artists'][0]['id']}}"><img class="rounded-circle img-fluid" src="{{release['artist_image']}}" alt=""></a>
+                                       {% set first_artist = spotify.artist(release['artists'][0]['id']) %}
+                                       {% set image = '/static/images/white.jpg' %}{% if first_artist['images'] %}{% set image = first_artist['images'][0]['url'] %}{% endif %}
+                                       <a href="/music/artist/{{release['artists'][0]['id']}}"><img class="rounded-circle img-fluid" src="{{image}}" alt=""></a>
                                     </div>
                                     <div class="media-support-info mt-2">
                                        <h5 class="mb-0 d-inline-block">
@@ -24,7 +26,7 @@
                                           {% endfor %}
                                        </h5>
                                        <p class="mb-0 d-inline-block">New {{release['album_type']}}</p>
-                                       <p class="mb-0 text-primary">Today</p>
+                                       <p class="mb-0 text-primary">{{format_date(release['release_date'])}}</p>
                                     </div>
 
                                     <div class="iq-card-post-toolbar">
@@ -58,7 +60,10 @@
                                  </div>
                               </div>
                               <div class="mt-3">
-                                 <p>{{release['name']}}</p>
+                                 <p>{% for artist in release['artists'] %}
+                                            <a href="/music/artist/{{artist['id']}}">{{artist['name']}}</a>
+                                            {% if not loop.last %}, {% endif %}
+                                          {% endfor %} - <a href="/music/album/{{release['id']}}">{{release['name']}}</a></p>
                               </div>
                               <div class="user-post text-center">
                                  <a href="/music/album/{{release['id']}}"><img src="{{release['images'][0]['url']}}" alt="post-image" class="img-fluid rounded w-100 mt-3"></a>
@@ -98,7 +103,7 @@
                               </li>
                               {% endfor %}
                            </ul>
-                           <a href="/music/artists/followed" class="btn btn-primary d-block mt-3">See All</a>
+                           <a href="/music/artist/followed" class="btn btn-primary d-block mt-3">See All</a>
                         </div>
                      </div>
                   </div>

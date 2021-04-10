@@ -4,12 +4,12 @@ from pprint import pprint
 
 import flask
 import spotipy
-from flask import session, request, redirect, render_template, abort
+from flask import session, request, redirect, render_template, abort, jsonify
 from flask_login import login_required, current_user
 
 from data import db_session
 from data.users import User
-from utils.spotify import spotify_login_required, session_cache_path, SCOPE
+from utils.spotify import spotify_login_required, session_cache_path, SCOPE, get_followed_artists
 
 blueprint = flask.Blueprint(
     'music',
@@ -47,6 +47,21 @@ def search_music(data, spotify: spotipy.Spotify):
     }
 
     return render_template('search.html', **params)
+
+
+@blueprint.route('/music/artist/followed')
+@login_required
+@spotify_login_required
+def followed_artists(spotify: spotipy.Spotify):
+    db_sess = db_session.create_session()
+
+    params = {
+        'current_user': db_sess.query(User).get(current_user.id),
+        'spotify': spotify,
+        'artists': sorted(get_followed_artists(spotify), key=lambda x: x['popularity'],
+                          reverse=True)
+    }
+    return render_template('followed_artists.html', **params)
 
 
 @blueprint.route('/music/artist/<id>')
@@ -200,7 +215,8 @@ def album(id, spotify: spotipy.Spotify):
         for track in params['playlist']['tracks']['items']:
             dur += float(track['duration_ms']) / 1000 / 60
         params['duration'] = round(dur, 2)
-        params['artists'] = [[(artist['name'], artist['id']) for artist in track['artists']] for track in params['playlist']['tracks']['items']]
+        params['artists'] = [[(artist['name'], artist['id']) for artist in track['artists']] for
+                             track in params['playlist']['tracks']['items']]
         #
         #
         # сделать отображение всех артистов
@@ -249,6 +265,19 @@ def top_artists(spotify: spotipy.Spotify):
               }
 
     return render_template('top_artists.html', **params)
+
+
+@blueprint.route('/music/test_page')
+@login_required
+@spotify_login_required
+def test_page(spotify: spotipy.Spotify):
+    ans = ''
+    pprint(spotify.new_releases('RU', limit=1))
+    return jsonify(
+        {
+            'ans': ans
+        }
+    )
 
 
 @blueprint.route('/spotify_sign_out')

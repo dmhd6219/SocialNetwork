@@ -24,7 +24,9 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <a href="/music/album/{{album['id']}}">
-                                        <img src="{{ album['images'][0]['url'] }}" alt="profile-img" class="img-fluid" style="max-width: 300px; max-height: 300px;">
+                                        {% set image = '/static/images/white.jpg' %}
+                                        {% if album['images'] %}{% set image = album['images'][0]['url'] %}{%endif%}
+                                        <img src="{{ image }}" alt="profile-img" class="img-fluid" style="max-width: 300px; max-height: 300px;">
                                     </a>
                                     <div class="friend-info ml-3">
                                         <a href="/music/album/{{album['id']}}"><h5>{{album['name']}}</h5></a>

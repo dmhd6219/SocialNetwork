@@ -2,6 +2,7 @@ import datetime
 import os
 from pprint import pprint
 
+import humanize
 from flask import Flask, session, request, redirect, render_template, abort
 import spotipy
 import uuid
@@ -79,41 +80,35 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/index')
 @app.route('/news')
+@app.route('/newsfeed')
+@login_required
+def index():
+    return redirect('/newsfeed/page1')
+
+
+@app.route('/newsfeed/page<int:page_num>')
 @login_required
 @spotify_login_required
-def index(spotify: spotipy.Spotify):
+def newsfeed(page_num: int, spotify: spotipy.Spotify):
     db_sess = db_session.create_session()
 
-    # return redirect('/profile')
+    def format_date(date):
+        date = date.split('-')
+        year = int(date[0])
+        month = int(date[1])
+        day = int(date[2])
+        return humanize.naturaltime(
+            datetime.datetime.now() - datetime.datetime(year=year, month=month, day=day))
 
     params = {
         'spotify': spotify,
         'current_user': db_sess.query(User).get(current_user.id),
-        'new_releases': []
+        'new_releases':
+            spotify.new_releases(country='RU', limit=50, offset=50 * (page_num - 1))['albums']['items'],
+        'followed_artists': sorted(get_followed_artists(spotify), key=lambda x: x['popularity'],
+                                   reverse=True)[:8:],
+        'format_date': format_date
     }
-
-    artists = sorted(get_followed_artists(spotify), key=lambda x: x['popularity'], reverse=True)
-
-    params['followed_artists'] = artists[:4]
-    for artist in artists:
-        tracks = get_all_artist_tracks(artist['id'], spotify)
-
-
-        albums = list(filter(
-            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y-%m-%d'),
-            tracks['albums']))
-        singles = list(filter(
-            lambda x: x['release_date'] == datetime.datetime.today().strftime('%Y-%m-%d'),
-            tracks['singles']))
-
-        for i in albums:
-            i['artist_image'] = artist['images'][0]['url']
-        for i in singles:
-            i['artist_image'] = artist['images'][0]['url']
-
-        params['new_releases'] += albums
-        params['new_releases'] += singles
-
 
     return render_template('newsfeed.html', **params)
 
@@ -140,7 +135,7 @@ def register():
         return redirect("/")
 
     params = {
-        'current_user': db_sess.query(User).get(current_user.id)
+
     }
 
     return render_template('register.html', form=form, **params)
@@ -162,7 +157,7 @@ def login():
                                form=form)
 
     params = {
-        'current_user': db_sess.query(User).get(current_user.id)
+
     }
 
     return render_template('login.html', form=form, **params)
@@ -332,9 +327,12 @@ def privacy_settings():
 @login_required
 def messages():
     db_sess = db_session.create_session()
+    curr_user = db_sess.query(User).get(current_user.id)
 
     params = {
-        'current_user': db_sess.query(User).get(current_user.id)
+        'current_user': curr_user,
+        'chats': db_sess.query(Chat).filter(
+            Chat.user1_id == curr_user.id or Chat.user2_id == curr_user.id)
     }
 
     return render_template('chat.html', **params)
