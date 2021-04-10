@@ -6,6 +6,29 @@
             <div class="container">
                <div class="row">
                   <div class="col-lg-8 row m-0 p-0">
+
+                     <nav aria-label="...">
+                              <ul class="pagination justify-content-center">
+                                 {% if page <= 1 %}
+                                    <li class="page-item disabled">
+                                       <a class="page-link" href="/newsfeed/page{{page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                    </li>
+                                 {% else %}
+                                    <li class="page-item">
+                                       <a class="page-link" href="/newsfeed/page{{page - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="/newsfeed/page{{page - 1}}">{{page - 1}}</a></li>
+                                 {% endif %}
+                                 <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="/newsfeed/page{{page}}">{{page}}<span class="sr-only">(current)</span></a>
+                                 </li>
+                                 <li class="page-item"><a class="page-link" href="/newsfeed/page{{page + 1}}">{{page + 1}}</a></li>
+                                 <li class="page-item">
+                                    <a class="page-link" href="/newsfeed/page{{page + 1}}">Next</a>
+                                 </li>
+                              </ul>
+                           </nav>
+
                      {% for release in new_releases %}
 
                      <div class="col-sm-12">

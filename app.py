@@ -104,10 +104,12 @@ def newsfeed(page_num: int, spotify: spotipy.Spotify):
         'spotify': spotify,
         'current_user': db_sess.query(User).get(current_user.id),
         'new_releases':
-            spotify.new_releases(country='RU', limit=50, offset=50 * (page_num - 1))['albums']['items'],
+            spotify.new_releases(country='RU', limit=20, offset=20 * (page_num - 1))['albums'][
+                'items'],
         'followed_artists': sorted(get_followed_artists(spotify), key=lambda x: x['popularity'],
                                    reverse=True)[:8:],
-        'format_date': format_date
+        'format_date': format_date,
+        'page': page_num
     }
 
     return render_template('newsfeed.html', **params)
