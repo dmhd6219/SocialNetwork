@@ -228,19 +228,6 @@ def album(id, spotify: spotipy.Spotify):
     return render_template('album.html', **params)
 
 
-@blueprint.route('/music/new')
-@login_required
-@spotify_login_required
-def new_music(spotify: spotipy.Spotify):
-    db_sess = db_session.create_session()
-
-    params = {'new_music': spotify.new_releases('RU'),
-              'current_user': db_sess.query(User).get(current_user.id),
-              'spotify': spotify,
-              }
-    return render_template('new_music.html', **params)
-
-
 @blueprint.route('/music/track/top')
 @login_required
 @spotify_login_required

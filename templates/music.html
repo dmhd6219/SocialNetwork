@@ -51,46 +51,11 @@
             <div class="col-md-8">
                 <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                     <div class="iq-card-body p-0  ">
-                        <img src="static/images/page-img/48.jpg" alt="story-img" class="img-fluid rounded">
+                        <img src="/static/images/page-img/48.jpg" alt="story-img" class="img-fluid rounded">
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12">
-                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
-                    <div class="iq-card-header d-flex justify-content-between">
-                        <div class="iq-header-title">
-                            <h4 class="card-title">New Music</h4>
-                        </div>
-                        <div class="iq-card-header-toolbar d-flex align-items-center">
-                            <a href="/music/new">View More</a>
-                        </div>
-                    </div>
-                    <div class="iq-card-body">
-                        <ul id="new-music" class="d-flex list-inline m-0 p-0 FUCK">
-                            {% for song in spotify.new_releases("RU", limit=10)["albums"]['items'] %}
-                            <li class="text-center col-sm-2">
-                                {% set cover = song['images'] %}
-                                {% if cover %}
-                                {% set cover = cover[0]['url'] %}
-                                {% else %}
-                                {% set cover = '/static/images/white.jpg' %}
-                                {% endif %}
-                                <div class="music-thumbnail position-relative mb-3">
-                                    <a href="/music/album/{{song['id']}}"><img src="{{ cover }}"
-                                                                               alt="music-thumb"
-                                                                               class="img-fluid w-100"
-                                                                               style="max-height: 140px; max-width: 140px;"></a>
-                                </div>
-                                <a href="/music/artist/{{song['artists'][0]['id']}}"><h6>
-                                    {{song['artists'][0]['name']}}</h6>
-                                </a>
-                                <p class="mb-0">{{song['name']}}</p>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
             <!--
             <div class="col-sm-12">
                 <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
