@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="iq-card position-relative inner-page-bg bg-primary" style="height: 150px;">
+                    <div class="inner-page-title">
+                        <h3 class="text-white">ANECDOTES OF CATEGORY B</h3>
+                        <p>yes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title" id="anecdote">ANECDOTES OF CATEGORY B</h4>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <h1 class="display-5">{{anec}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

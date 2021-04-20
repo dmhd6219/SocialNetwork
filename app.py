@@ -9,8 +9,10 @@ import spotipy
 from flask_restful import Api
 from flask_uploads import configure_uploads, patch_request_class
 
+import funcs_api
 import music
 import rest_api
+import utils.some
 import weather
 from data import db_session
 
@@ -26,7 +28,7 @@ from forms.upload import photos, UploadPhoto
 from forms.user import RegisterUser, LoginUser
 
 from PIL import Image
-
+import random
 
 from utils.spotify import spotify_login_required, SCOPE, get_followed_artists, get_all_artist_tracks
 
@@ -108,6 +110,23 @@ def newsfeed(page_num: int, spotify: spotipy.Spotify):
     }
 
     return render_template('newsfeed.html', **params)
+
+
+@app.route('/anecdotes')
+@login_required
+def anecdotes():
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(current_user.id)
+
+    anec = funcs_api.get_anec().json['anecdote']
+
+    params = {
+        'current_user': user,
+        'anec':anec
+    }
+
+
+    return render_template('anecs.html', **params)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -360,6 +379,7 @@ def test():
 if __name__ == '__main__':
     db_session.global_init("db/database.db")
 
+    app.register_blueprint(funcs_api.blueprint)
     app.register_blueprint(music.blueprint)
     app.register_blueprint(weather.blueprint)
 
