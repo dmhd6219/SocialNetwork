@@ -5,7 +5,6 @@ from pprint import pprint
 import humanize
 from flask import Flask, session, request, redirect, render_template, abort
 import spotipy
-import uuid
 
 from flask_restful import Api
 from flask_uploads import configure_uploads, patch_request_class
@@ -22,16 +21,12 @@ from data.posts import Post
 from data.users import User
 from forms.contacts import ContactInformation
 from forms.personal_info import PersonalInformation
-from forms.post import CreatePost
-from forms.privacy_settings import PrivacySettingsForm
 from forms.profile_settings import AccountSetting, SocialMedia, ChangePassword
-from forms.search import SearchForm
 from forms.upload import photos, UploadPhoto
 from forms.user import RegisterUser, LoginUser
 
 from PIL import Image
 
-from flask_jwt_simple import JWTManager
 
 from utils.spotify import spotify_login_required, SCOPE, get_followed_artists, get_all_artist_tracks
 
