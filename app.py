@@ -347,11 +347,22 @@ def messages():
 
     params = {
         'current_user': curr_user,
-        'chats': db_sess.query(Chat).filter(
-            Chat.user1_id == curr_user.id or Chat.user2_id == curr_user.id)
     }
 
     return render_template('chat.html', **params)
+
+@app.route('/messages/<int:peer>')
+@login_required
+def chat(peer:int):
+    db_sess = db_session.create_session()
+    curr_user = db_sess.query(User).get(current_user.id)
+
+
+
+    params = {
+        'current_user': curr_user,
+
+    }
 
 
 @app.errorhandler(404)

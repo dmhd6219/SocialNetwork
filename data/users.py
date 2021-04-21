@@ -13,6 +13,12 @@ friends = sqlalchemy.Table(
     sqlalchemy.Column('friend_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id')),
     sqlalchemy.UniqueConstraint('user_id', 'friend_id', name='unique_friendships'))
 
+chats = sqlalchemy.Table(
+    'chats', SqlAlchemyBase.metadata,
+    sqlalchemy.Column('user1_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'), index=True),
+    sqlalchemy.Column('user2_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id')),
+    sqlalchemy.UniqueConstraint('user1_id', 'user2_id', name='unique_dialogs'))
+
 
 class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
@@ -84,6 +90,10 @@ class User(SqlAlchemyBase, UserMixin):
                                secondary=friends,
                                primaryjoin=id == friends.c.user_id,
                                secondaryjoin=id == friends.c.friend_id)
+
+    chats = orm.relation("Chat",
+                         secondary="chats_to_users",
+                         backref="chats")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

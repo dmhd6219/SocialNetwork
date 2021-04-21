@@ -1,26 +1,18 @@
-import datetime
 import sqlalchemy
-from sqlalchemy import orm
 
+from data.db_session import SqlAlchemyBase
 
-from .db_session import SqlAlchemyBase
-from .users import User
-
-chats = sqlalchemy.Table(
-    'chats', SqlAlchemyBase.metadata,
-    sqlalchemy.Column('user1_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'),
-                      ),
-    sqlalchemy.Column('user2_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id')),
-    sqlalchemy.UniqueConstraint('user1_id', 'user2_id', name='unique_dialogs'))
+chats_to_users = sqlalchemy.Table(
+    'chats_to_users',
+    SqlAlchemyBase.metadata,
+    sqlalchemy.Column('chats', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('chats.id')),
+    sqlalchemy.Column('users', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('users.id'))
+)
 
 
 class Chat(SqlAlchemyBase):
     __tablename__ = 'chats'
-
-    id = sqlalchemy.Column(sqlalchemy.Integer,
-                           primary_key=True, autoincrement=True)
-
-    users = orm.relationship('User',
-                             secondary=chats,
-                             primaryjoin=id == chats.c.user1_id,
-                             secondaryjoin=id == chats.c.user2_id)
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,
+                           autoincrement=True)
