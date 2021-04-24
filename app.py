@@ -338,19 +338,6 @@ def privacy_settings():
 
     return render_template('comingsoon.html', **params)
 
-
-@app.route('/messages')
-@login_required
-def messages():
-    db_sess = db_session.create_session()
-    curr_user = db_sess.query(User).get(current_user.id)
-
-    params = {
-        'current_user': curr_user,
-    }
-
-    return render_template('chat.html', **params)
-
 @app.route('/messages/<int:peer>')
 @login_required
 def chat(peer:int):
@@ -385,6 +372,11 @@ def test():
     }
 
     return render_template('test_page.html', **params)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 
 if __name__ == '__main__':

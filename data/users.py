@@ -91,9 +91,7 @@ class User(SqlAlchemyBase, UserMixin):
                                primaryjoin=id == friends.c.user_id,
                                secondaryjoin=id == friends.c.friend_id)
 
-    chats = orm.relation("Chat",
-                         secondary="chats_to_users",
-                         backref="chats")
+
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
