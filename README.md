@@ -1,8 +1,8 @@
 # Flask-Spotify-Social Network
 
 ![License](https://img.shields.io/github/license/dmhd6219/SocialNetwork)
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/release/python-390/)
-[![Flask](https://img.shields.io/badge/flask-2.0%2B-blue.svg)](https://flask.palletsprojects.com/en/2.0.x/)
+[![Python](https://img.shields.io/badge/python-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/flask-blue.svg)](https://flask.palletsprojects.com/)
 
 A social network web application built on Flask that allows users to log in via their Spotify account.
 The web app seamlessly integrates with Spotify's API to enable users to share their favorite music tracks, playlists,
